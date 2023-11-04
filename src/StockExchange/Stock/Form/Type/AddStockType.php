@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class AddStockType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, ['required' => true])
@@ -21,11 +21,4 @@ class AddStockType extends AbstractType
             ->add('symbol', EnumType::class, ['class' => Symbol::class,'required' => true])
             ->add('Add', SubmitType::class);
     }
-
-//    public function configureOptions(OptionsResolver $resolver): void
-//    {
-//        $resolver->setDefaults([
-//            'data_class' => StockDto::class,
-//        ]);
-//    }
 }

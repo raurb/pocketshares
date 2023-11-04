@@ -20,10 +20,14 @@ class StockService
         return $stock;
     }
 
+    public function getStocks(?int $offset = null, ?int $limit = null)
+    {
+        return $this->stockRepository->findAll();
+    }
+
     public function loadDto(int $id): StockDto
     {
-        $stock = $this->load($id);
-        return StockDto::from($stock);
+        return StockDtoFactory::createFromEntity($this->load($id));
     }
 
     public function add(StockDto $stockDto): StockDto

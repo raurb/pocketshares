@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/stock', name: 'stock_')]
+#[Route('/stock-exchange/stock', name: 'stock_exchange_stock_')]
 class StockController extends AbstractController
 {
     #[Route('/add', name: 'add')]
@@ -21,7 +21,7 @@ class StockController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            $stock = StockDto::with(
+            $stock = StockDtoFactory::create(
                 name: $formData['name'],
                 ticker: $formData['ticker'],
                 symbol: $formData['symbol'],
@@ -29,8 +29,16 @@ class StockController extends AbstractController
             $stockService->add($stock);
         }
 
-        return $this->render('stock/stock_add.html.twig', [
+        return $this->render('stock_exchange/stock/_stock_add.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/list', name: 'list')]
+    public function list(StockService $stockService): Response
+    {
+        return $this->render('stock_exchange/stock/_stock_list.html.twig', [
+            'stocks' => $stockService->getStocks(),
         ]);
     }
 }
