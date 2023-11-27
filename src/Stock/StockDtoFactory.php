@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\StockExchange\Stock;
+namespace PocketShares\Stock;
 
 use PocketShares\StockExchange\Symbol;
 

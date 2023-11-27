@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\StockExchange\Stock;
+namespace PocketShares\Stock;
 
-use PocketShares\StockExchange\Stock\Form\Type\AddStockType;
+use PocketShares\Stock\Form\Type\AddStockType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/stock-exchange/stock', name: 'stock_exchange_stock_')]
+#[Route('/stock', name: 'stock_')]
 class StockController extends AbstractController
 {
     #[Route('/add', name: 'add')]
@@ -29,7 +29,7 @@ class StockController extends AbstractController
             $stockService->add($stock);
         }
 
-        return $this->render('stock_exchange/stock/_stock_add.html.twig', [
+        return $this->render('stock/_stock_add.html.twig', [
             'form' => $form,
         ]);
     }
@@ -37,7 +37,7 @@ class StockController extends AbstractController
     #[Route('/list', name: 'list')]
     public function list(StockService $stockService): Response
     {
-        return $this->render('stock_exchange/stock/_stock_list.html.twig', [
+        return $this->render('stock/_stock_list.html.twig', [
             'stocks' => $stockService->getStocks(),
         ]);
     }

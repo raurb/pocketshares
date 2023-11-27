@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\StockExchange\Stock;
+namespace PocketShares\Stock;
 
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
 use PocketShares\Common\BaseEntity;
 use PocketShares\StockExchange\Symbol;
 

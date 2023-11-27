@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\StockExchange\Stock\Form\Type;
+namespace PocketShares\Stock\Form\Type;
 
 use PocketShares\StockExchange\Symbol;
 use Symfony\Component\Form\AbstractType;

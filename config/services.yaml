@@ -18,6 +18,3 @@ services:
         exclude:
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-    PocketShares\StockExchange\Stock\StockController:
-        tags: ['controller.service_arguments']
