@@ -1,3 +1,0 @@
-services:
-  PocketShares\Stock\StockController:
-    tags: [ 'controller.service_arguments' ]

@@ -6,13 +6,28 @@
 parameters:
 
 services:
-    # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    _instanceof:
+        PocketShares\Shared\Application\Command\CommandHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: messenger.bus.command }
+
+        PocketShares\Shared\Application\Query\QueryHandlerInterface:
+            public: true
+            tags:
+                - { name: messenger.message_handler, bus: messenger.bus.query }
+
+    PocketShares\Shared\Infrastructure\Bus\MessengerCommandBus:
+        arguments:
+            - '@messenger.bus.command'
+
+    PocketShares\Shared\Infrastructure\Bus\MessengerQueryBus:
+        arguments:
+            - '@messenger.bus.query'
+
     PocketShares\:
         resource: '../src/'
         exclude:

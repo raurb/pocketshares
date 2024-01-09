@@ -10,7 +10,8 @@
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Ticker</th>
-            <th scope="col">Stock exchange</th>
+            <th scope="col">Market</th>
+            <th scope="col">Currency</th>
         </tr>
         </thead>
         <tbody>
@@ -19,7 +20,8 @@
                     <th scope="row">{{ stock.id }}</th>
                     <td>{{ stock.name }}</td>
                     <td>{{ stock.ticker }}</td>
-                    <td>{{ stock.symbol.value }}</td>
+                    <td>{{ stock.marketSymbol.value }}</td>
+                    <td>{{ stock.currency }}</td>
                 </tr>
         {% endfor %}
         </tbody>
