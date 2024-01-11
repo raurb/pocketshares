@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\Stock\Infrastructure\ReadModel\Postgresql;
+namespace PocketShares\Stock\Infrastructure\ReadModel\Mysql;
 
 use Money\Currency;
-use PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository\PostgresRepository;
+use PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository\MysqlRepository;
 use PocketShares\Stock\Domain\MarketSymbol;
 use PocketShares\Stock\Infrastructure\Doctrine\Dbal\Entity\StockEntity;
 use PocketShares\Stock\Infrastructure\ReadModel\StockView;
 
-class PostgresqlReadModelStockRepository extends PostgresRepository
+class MysqlReadModelStockRepository extends MysqlRepository
 {
     /** @return StockView[] */
     public function getAllStocks(?int $limit = null, ?int $offset = null): array

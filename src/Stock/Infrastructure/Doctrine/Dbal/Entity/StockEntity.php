@@ -6,27 +6,26 @@ namespace PocketShares\Stock\Infrastructure\Doctrine\Dbal\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
-use Money\Currency;
+use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
 
+/**
+ * @todo pozniej sprawdzic cache
+ * @see https://www.doctrine-project.org/projects/doctrine-orm/en/2.17/reference/second-level-cache.html
+ */
 #[Entity]
 #[Table(name: "stock")]
-class StockEntity
+#[Index(columns: ['ticker'], name: 'ticker_idx')]
+class StockEntity extends BaseEntity
 {
-    #[Id]
-    #[Column(type: 'integer')]
-    #[GeneratedValue]
-    private ?int $id = null;
-
-    #[Column(type: 'string')]
+    #[Column(type: 'string', length: 100)]
     private string $name;
 
-    #[Column(type: 'string')]
+    #[Column(type: 'string', length: 5)]
     private string $ticker;
 
-    #[Column(type: 'market_symbol_enum_type')]
+    #[Column(type: 'market_symbol_enum_type', length: 10)]
     private string $marketSymbol;
 
     #[Column(type: 'string', length: 3)]
@@ -42,11 +41,6 @@ class StockEntity
         $this->ticker = $ticker;
         $this->marketSymbol = $marketSymbol;
         $this->currency = $currency;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getName(): string

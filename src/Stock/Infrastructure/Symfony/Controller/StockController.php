@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace PocketShares\Stock\Infrastructure\Symfony\Controller;
 
-use Money\Currencies\ISOCurrencies;
-use Money\Currency;
-use Money\Money;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use PocketShares\Stock\Application\Command\CreateStock\CreateStockCommand;
 use PocketShares\Stock\Application\Query\GetAllStocks\GetAllStocksQuery;

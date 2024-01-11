@@ -6,7 +6,7 @@ namespace PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-class PostgresRepository
+class MysqlRepository
 {
     public function __construct(protected EntityManagerInterface $entityManager)
     {

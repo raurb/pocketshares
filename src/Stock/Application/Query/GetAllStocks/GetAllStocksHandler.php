@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PocketShares\Stock\Application\Query\GetAllStocks;
 
 use PocketShares\Shared\Application\Query\QueryHandlerInterface;
-use PocketShares\Stock\Infrastructure\ReadModel\Postgresql\PostgresqlReadModelStockRepository;
+use PocketShares\Stock\Infrastructure\ReadModel\Mysql\MysqlReadModelStockRepository;
 use PocketShares\Stock\Infrastructure\ReadModel\StockView;
 
 class GetAllStocksHandler implements QueryHandlerInterface
 {
-    public function __construct(private readonly PostgresqlReadModelStockRepository $stockRepository)
+    public function __construct(private readonly MysqlReadModelStockRepository $stockRepository)
     {
     }
 

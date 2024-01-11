@@ -9,6 +9,7 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
         types:
             market_symbol_enum_type: PocketShares\Stock\Infrastructure\Doctrine\Dbal\Type\MarketSymbolType
+            money_type: PocketShares\Shared\Infrastructure\Doctrine\Dbal\MoneyType
 
         mapping_types:
             enum: string
