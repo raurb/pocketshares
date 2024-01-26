@@ -6,9 +6,9 @@ namespace PocketShares\Shared\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\JsonType;
-use Money\Currency;
 use Money\Money;
 use PocketShares\Shared\Infrastructure\Exception\CannotBuildMoneyException;
+use PocketShares\Shared\Utilities\MoneyFactory;
 
 class MoneyType extends JsonType
 {
@@ -26,7 +26,7 @@ class MoneyType extends JsonType
             throw new CannotBuildMoneyException($value);
         }
 
-        return new Money($decoded['amount'], new Currency($decoded['currency']));
+        return MoneyFactory::create($decoded['amount'], $decoded['currency']);
     }
 
     public function getName(): string

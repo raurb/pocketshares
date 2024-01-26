@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace PocketShares\Portfolio\Infrastructure\ReadModel\Mysql;
 
-use PocketShares\Portfolio\Infrastructure\Doctrine\PortfolioEntity;
+use PocketShares\Portfolio\Domain\Repository\PortfolioReadModelInterface;
+use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 use PocketShares\Portfolio\Infrastructure\ReadModel\PortfolioView;
 use PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository\MysqlRepository;
 
-class MysqlReadModelPortfolioRepository extends MysqlRepository
+class MysqlReadModelPortfolioRepository extends MysqlRepository implements PortfolioReadModelInterface
 {
     /** @return PortfolioView[] */
     public function getAllPortfolios(): array

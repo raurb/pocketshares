@@ -30,7 +30,7 @@ class StockController extends ApiController
                 currency: $formData['currency'],
             );
 
-            $this->commandBus->handle($command);
+            $this->commandBus->dispatch($command);
         }
 
         return $this->render('stock/_stock_add.html.twig', [

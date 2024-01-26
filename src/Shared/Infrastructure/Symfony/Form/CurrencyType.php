@@ -25,7 +25,8 @@ class CurrencyType extends AbstractType
     {
         $currencies = [];
         foreach ((new ISOCurrencies()) as $currency) {
-            $currencies[$currency->getCode()] = $currency->getCode();
+            $code = $currency->getCode();
+            $currencies[$code] = $code;
         }
 
         return $currencies;

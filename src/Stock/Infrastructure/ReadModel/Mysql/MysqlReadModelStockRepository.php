@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace PocketShares\Stock\Infrastructure\ReadModel\Mysql;
 
-use Money\Currency;
 use PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository\MysqlRepository;
-use PocketShares\Stock\Domain\MarketSymbol;
-use PocketShares\Stock\Infrastructure\Doctrine\Dbal\Entity\StockEntity;
+use PocketShares\Stock\Domain\Repository\StockReadModelInterface;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 use PocketShares\Stock\Infrastructure\ReadModel\StockView;
 
-class MysqlReadModelStockRepository extends MysqlRepository
+class MysqlReadModelStockRepository extends MysqlRepository implements StockReadModelInterface
 {
     /** @return StockView[] */
     public function getAllStocks(?int $limit = null, ?int $offset = null): array
@@ -41,11 +40,16 @@ class MysqlReadModelStockRepository extends MysqlRepository
                 id: $result['id'],
                 name: $result['name'],
                 ticker: $result['ticker'],
-                marketSymbol: MarketSymbol::from($result['marketSymbol']),
-                currency: new Currency($result['currency']),
+                marketSymbol: $result['marketSymbol'],
+                currency: $result['currency'],
             );
         }
 
         return $stocks;
+    }
+
+    public function findOneByTicker(string $ticker): ?StockView
+    {
+        return null;
     }
 }

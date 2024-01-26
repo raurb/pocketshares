@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\Portfolio\Application\Command;
+namespace PocketShares\Portfolio\Application\Command\CreatePortfolio;
 
 use PocketShares\Portfolio\Domain\Portfolio;
 use PocketShares\Portfolio\Domain\Repository\PortfolioRepositoryInterface;

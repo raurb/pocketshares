@@ -1,0 +1,26 @@
+FROM php:8.3-apache
+
+RUN apt-get update \
+    && apt-get install -y libzip-dev zip librabbitmq-dev \
+    && docker-php-ext-install zip \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-install bcmath \
+    && docker-php-ext-install sockets \
+    && pecl install amqp && docker-php-ext-enable amqp \
+    && a2enmod rewrite \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install APCU
+RUN pecl update-channels
+RUN pecl install apcu
+
+RUN pecl install xdebug
+RUN apt-get install -y supervisor vim
+
+RUN usermod -u 1000 www-data
+
+RUN echo "ServerName pocketshares.local" >> /etc/apache2/apache2.conf
+
+RUN service apache2 restart
+
+WORKDIR /var/www

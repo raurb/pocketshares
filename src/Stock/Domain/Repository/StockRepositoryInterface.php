@@ -8,7 +8,9 @@ use PocketShares\Stock\Domain\Stock;
 
 interface StockRepositoryInterface
 {
-    public function find(string $ticker): ?Stock;
-
     public function store(Stock $stock): void;
+
+    public function readById(int $stockId): ?Stock;
+
+    public function readByTicker(string $ticker): ?Stock;
 }

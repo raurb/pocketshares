@@ -6,5 +6,5 @@ namespace PocketShares\Shared\Application\Command;
 
 interface CommandBusInterface
 {
-    public function handle(CommandInterface $command): void;
+    public function dispatch(CommandInterface $command): void;
 }

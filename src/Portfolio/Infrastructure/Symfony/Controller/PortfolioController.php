@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PocketShares\Portfolio\Infrastructure\Symfony\Controller;
 
-use PocketShares\Portfolio\Application\Command\CreatePortfolioCommand;
+use PocketShares\Portfolio\Application\Command\CreatePortfolio\CreatePortfolioCommand;
 use PocketShares\Portfolio\Application\Query\GetAllPortfoliosQuery;
 use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\CreatePortfolioType;
+use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/portfolio', name: 'portfolio_')]
@@ -28,7 +28,7 @@ class PortfolioController extends ApiController
                 currencyCode:$formData['currency_code'],
             );
 
-            $this->commandBus->handle($command);
+            $this->commandBus->dispatch($command);
         }
 
         return $this->render('portfolio/_portfolio_create.html.twig', [

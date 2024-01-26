@@ -10,6 +10,12 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    PocketShares\:
+        resource: '../src/'
+        exclude:
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
     _instanceof:
         PocketShares\Shared\Application\Command\CommandHandlerInterface:
             tags:
@@ -20,6 +26,9 @@ services:
             tags:
                 - { name: messenger.message_handler, bus: messenger.bus.query }
 
+        PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\Strategy\RegisterTransactionStrategyInterface:
+            tags: [ 'portfolio.transaction.strategy']
+
     PocketShares\Shared\Infrastructure\Bus\MessengerCommandBus:
         arguments:
             - '@messenger.bus.command'
@@ -28,8 +37,7 @@ services:
         arguments:
             - '@messenger.bus.query'
 
-    PocketShares\:
-        resource: '../src/'
-        exclude:
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+    PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\TransactionRegistryProcessor:
+        autowire: false
+        arguments:
+            - !tagged_iterator portfolio.transaction.strategy

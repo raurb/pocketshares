@@ -4,19 +4,33 @@ declare(strict_types=1);
 
 namespace PocketShares\Portfolio\Domain;
 
-use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Money;
+use PocketShares\Portfolio\Domain\Exception\CannotRegisterMoreThanOneTransaction;
 use PocketShares\Shared\Domain\AggregateRoot;
-use PocketShares\Stock\Domain\Exception\UnknownCurrencyException;
+use PocketShares\Shared\Domain\NumberOfShares;
+use PocketShares\Shared\Utilities\MoneyFactory;
+use PocketShares\Stock\Domain\Stock;
 
 class Portfolio extends AggregateRoot
 {
+    private ?Transaction $newTransaction = null;
+
+    /**
+     * @param string $name
+     * @param Money $value
+     * @param Holding[] $holdings
+     * @param array $transactions
+     * @param int|null $portfolioId
+     */
     public function __construct(
-        public readonly string $name,
-        public readonly Money $value,
-        public readonly array $holdings,
-    ) {
+        private string $name,
+        private Money  $value, //@todo tutaj ma byc wyliczana wartosc na podstawie wartosci pozycji
+        private array  $holdings = [],
+        private array  $transactions = [],
+        private ?int   $portfolioId = null,
+    )
+    {
     }
 
     public static function create(
@@ -24,11 +38,73 @@ class Portfolio extends AggregateRoot
         string $currencyCode,
     ): self
     {
-        $currency = new Currency($currencyCode);
-        if (!(new ISOCurrencies())->contains($currency)) {
-            throw new UnknownCurrencyException($currency->getCode());
+        return new self($name, MoneyFactory::create(0, $currencyCode), []);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getValue(): Money
+    {
+        return $this->value;
+    }
+
+    public function getCurrency(): Currency
+    {
+        return $this->getValue()->getCurrency();
+    }
+
+    /** @return Holding[] */
+    public function getHoldings(): array
+    {
+        return $this->holdings;
+    }
+
+    /** @return Transaction[] */
+    public function getTransactions(): array
+    {
+        return $this->transactions;
+    }
+
+    public function getPortfolioId(): ?int
+    {
+        return $this->portfolioId;
+    }
+
+    public function registerTransaction(Transaction $transaction): void
+    {
+        if ($this->newTransaction) {
+            throw new CannotRegisterMoreThanOneTransaction();
         }
 
-        return new self($name, new Money(0, $currency), []);
+        $holding = $this->searchForHolding($transaction->stock);
+
+        if (!$holding) {
+            $holding = new Holding(
+                $transaction->stock,
+                new NumberOfShares(0),
+            );
+        }
+
+        $holding->registerTransaction($transaction);
+        $this->transactions[] = $this->newTransaction = $transaction;
+    }
+
+    public function getNewTransaction(): ?Transaction
+    {
+        return $this->newTransaction;
+    }
+
+    public function searchForHolding(Stock $stock): ?Holding
+    {
+        foreach ($this->holdings as $holding) {
+            if ($holding->getStock()->ticker === $stock->ticker) {
+                return $holding;
+            }
+        }
+
+        return null;
     }
 }

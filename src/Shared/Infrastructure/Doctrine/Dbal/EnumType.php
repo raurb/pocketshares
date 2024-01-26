@@ -9,21 +9,21 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 abstract class EnumType extends Type
 {
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         $values = array_map(static function($val) { return "'".$val."'"; }, $this->getValues());
 
         return "ENUM(".implode(", ", $values).")";
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         return $value;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
-        if (!in_array($value, $this->getValues(), true)) {
+        if (!in_array($value->value, $this->getValues(), true)) {
             throw new \InvalidArgumentException("Invalid '".$this->getColumnName()."' value.");
         }
         return $value;

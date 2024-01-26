@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  server:
+    build:
+      context: docker
+      dockerfile: Dockerfile
+    container_name: 'pocketshares-php'
+    restart: 'unless-stopped'
+    tty: true
+    volumes:
+      - .:/var/www
+      - ./docker/vhost.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./docker/php-additional-config.ini:/usr/local/etc/php/conf.d/php-additional-config.ini
+    environment:
+      - HOSTNAME=pocketshares.local
+      - PHP_IDE_CONFIG=serverName=pocketshares.local
+    links:
+      - database
+    ports:
+      - '80:80'
+
+  database:
+    image: mysql:8.2
+    container_name: 'pocketshares-database'
+    restart: 'unless-stopped'
+    volumes:
+      - ./docker/volumes/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: 'pocketshares'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
