@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace PocketShares\Portfolio\Infrastructure\Symfony\Controller;
 
 use PocketShares\Portfolio\Application\Command\CreatePortfolio\CreatePortfolioCommand;
-use PocketShares\Portfolio\Application\Query\GetAllPortfoliosQuery;
+use PocketShares\Portfolio\Application\Query\GetAllPortfolios\GetAllPortfoliosQuery;
+use PocketShares\Portfolio\Application\Query\GetPortfolioHoldings\GetPortfolioDetailsQuery;
+use PocketShares\Portfolio\Application\Query\GetPortfolioTransactions\GetPortfolioTransactionsQuery;
 use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\CreatePortfolioType;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +31,10 @@ class PortfolioController extends ApiController
             );
 
             $this->commandBus->dispatch($command);
+
+            return $this->render('portfolio/_portfolio_list.html.twig', [
+                'portfolios' => $this->queryBus->ask(new GetAllPortfoliosQuery()),
+            ]);
         }
 
         return $this->render('portfolio/_portfolio_create.html.twig', [
@@ -41,6 +47,27 @@ class PortfolioController extends ApiController
     {
         return $this->render('portfolio/_portfolio_list.html.twig', [
             'portfolios' => $this->queryBus->ask(new GetAllPortfoliosQuery()),
+        ]);
+    }
+
+    #[Route('/{id}/details', name: 'details', methods: ['GET'])]
+    public function portfolioHoldings(int $id): Response
+    {
+        $portfolioView = $this->queryBus->ask(new GetPortfolioDetailsQuery($id));
+
+        return $this->render('portfolio/_portfolio_details.html.twig', [
+            'portfolio' => $portfolioView ?? [],
+        ]);
+    }
+
+    #[Route('/{id}/transactions', name: 'transactions', methods: ['GET'])]
+    public function portfolioTransactions(int $id): Response
+    {
+        $transactions = $this->queryBus->ask(new GetPortfolioTransactionsQuery($id));
+
+        return $this->render('portfolio/_portfolio_transactions.html.twig', [
+            'portfolioId' => $id,
+            'transactions' => $transactions ?? [],
         ]);
     }
 }

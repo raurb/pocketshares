@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\Portfolio\Application\Query;
+namespace PocketShares\Portfolio\Application\Query\GetAllPortfolios;
 
 use PocketShares\Portfolio\Domain\Repository\PortfolioReadModelInterface;
 use PocketShares\Shared\Application\Query\QueryHandlerInterface;

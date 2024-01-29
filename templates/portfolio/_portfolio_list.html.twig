@@ -16,8 +16,8 @@
             {% for portfolio in portfolios %}
                 <tr>
                     <th scope="row">{{ portfolio.id }}</th>
-                    <td>{{ portfolio.name }}</td>
-                    <td>{{ portfolio.value.amount }} {{ portfolio.value.currency }}</td>
+                    <td><a href="{{ path('portfolio_details', {id: portfolio.id}) }}" >{{ portfolio.name }}</a></td>
+                    <td>{{ portfolio.value }} {{ portfolio.valueCurrency }}</td>
                 </tr>
             {% endfor %}
             </tbody>

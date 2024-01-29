@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h1>{{ portfolio.name }}</h1>
+    <h2>{{ portfolio.value }} {{ portfolio.valueCurrency }}</h2>
+    {% block page_contents %}
+
+        <h1>Holdings</h1>
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Ticker</th>
+                <th scope="col">Market</th>
+                <th scope="col">Shares</th>
+                <th scope="col">Currency</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for holding in portfolio.holdings %}
+                <tr>
+                    <th scope="row">{{ holding.stockName }}</th>
+                    <td>{{ holding.stockTicker }}</td>
+                    <td>{{ holding.stockMarketSymbol }}</td>
+                    <td>{{ holding.numberOfShares }}</td>
+                    <td>{{ holding.currency }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if portfolio.holdings %}
+            <p><a href="{{ path('portfolio_transactions', {id: portfolio.id}) }}">Show transaction history</a></p>
+        {% endif %}
+
+    {% endblock %}
+{% endblock %}

@@ -7,6 +7,8 @@ namespace PocketShares\Portfolio\Domain;
 use Money\Currency;
 use Money\Money;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterMoreThanOneTransaction;
+use PocketShares\Portfolio\Domain\Exception\CannotRegisterTransactionNoHolding;
+use PocketShares\Portfolio\Domain\Exception\CannotSellMoreStocksThanOwn;
 use PocketShares\Shared\Domain\AggregateRoot;
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Utilities\MoneyFactory;
@@ -79,6 +81,8 @@ class Portfolio extends AggregateRoot
             throw new CannotRegisterMoreThanOneTransaction();
         }
 
+        $this->validateTransaction($transaction);
+
         $holding = $this->searchForHolding($transaction->stock);
 
         if (!$holding) {
@@ -106,5 +110,39 @@ class Portfolio extends AggregateRoot
         }
 
         return null;
+    }
+
+    private function validateTransaction(Transaction $transaction): void
+    {
+        match ($transaction->transactionType) {
+            TransactionType::TYPE_SELL => $this->validateSellTransaction($transaction),
+            TransactionType::TYPE_CLOSE_POSITION => $this->validateClosePosition($transaction),
+        };
+    }
+
+    private function validateSellTransaction(Transaction $transaction): void
+    {
+        $holding = $this->searchForHolding($transaction->stock);
+
+        if (!$holding) {
+            throw new CannotRegisterTransactionNoHolding($transaction->stock->ticker);
+        }
+
+        if ($holding->getNumberOfShares()->getNumberOfShares() > $transaction->numberOfShares->getNumberOfShares()) {
+            throw new CannotSellMoreStocksThanOwn(
+                $transaction->stock->ticker,
+                $holding->getNumberOfShares()->getNumberOfShares(),
+                $transaction->numberOfShares->getNumberOfShares()
+            );
+        }
+    }
+
+    private function validateClosePosition(Transaction $transaction): void
+    {
+        $holding = $this->searchForHolding($transaction->stock);
+
+        if (!$holding) {
+            throw new CannotRegisterTransactionNoHolding($transaction->stock->ticker);
+        }
     }
 }
