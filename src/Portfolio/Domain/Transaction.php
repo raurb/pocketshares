@@ -17,8 +17,8 @@ readonly class Transaction
         public Stock              $stock,
         public \DateTimeImmutable $transactionDate,
         public TransactionType    $transactionType,
+        public Money             $price,
         public ?NumberOfShares    $numberOfShares,
-        public ?Money             $price,
     )
     {
     }

@@ -7,6 +7,8 @@ RUN apt-get update \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install sockets \
     && pecl install amqp && docker-php-ext-enable amqp \
+    && docker-php-ext-install opcache \
+    && docker-php-ext-install intl \
     && a2enmod rewrite \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

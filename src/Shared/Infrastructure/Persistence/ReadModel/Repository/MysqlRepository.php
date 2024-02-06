@@ -19,6 +19,11 @@ class MysqlRepository
 
     protected function executeRawQuery(string $sql, array $bindParameters = []): Result
     {
-        return $this->connection->prepare($sql)->executeQuery($bindParameters);
+        $statement = $this->connection->prepare($sql);
+        foreach ($bindParameters as $parameter => $value) {
+            $statement->bindValue($parameter, $value);
+        }
+
+        return $statement->executeQuery();
     }
 }

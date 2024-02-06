@@ -117,6 +117,7 @@ class Portfolio extends AggregateRoot
         match ($transaction->transactionType) {
             TransactionType::TYPE_SELL => $this->validateSellTransaction($transaction),
             TransactionType::TYPE_CLOSE_POSITION => $this->validateClosePosition($transaction),
+            TransactionType::TYPE_BUY => '',
         };
     }
 
@@ -128,7 +129,7 @@ class Portfolio extends AggregateRoot
             throw new CannotRegisterTransactionNoHolding($transaction->stock->ticker);
         }
 
-        if ($holding->getNumberOfShares()->getNumberOfShares() > $transaction->numberOfShares->getNumberOfShares()) {
+        if ($transaction->numberOfShares->getNumberOfShares() > $holding->getNumberOfShares()->getNumberOfShares()) {
             throw new CannotSellMoreStocksThanOwn(
                 $transaction->stock->ticker,
                 $holding->getNumberOfShares()->getNumberOfShares(),

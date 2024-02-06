@@ -6,7 +6,6 @@ namespace PocketShares\Stock\Infrastructure\ReadModel\Mysql;
 
 use PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository\MysqlRepository;
 use PocketShares\Stock\Domain\Repository\StockReadModelInterface;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 use PocketShares\Stock\Infrastructure\ReadModel\StockView;
 
 class MysqlReadModelStockRepository extends MysqlRepository implements StockReadModelInterface
@@ -14,21 +13,9 @@ class MysqlReadModelStockRepository extends MysqlRepository implements StockRead
     /** @return StockView[] */
     public function getAllStocks(?int $limit = null, ?int $offset = null): array
     {
-        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $sql = "SELECT id, name, ticker, market_symbol, currency FROM stock";
 
-        $queryBuilder
-            ->select(
-                'st.id',
-                'st.name',
-                'st.ticker',
-                'st.marketSymbol',
-                'st.currency',
-            )
-            ->from(StockEntity::class, 'st')
-            ->setFirstResult($offset)
-            ->setMaxResults($limit);
-
-        $results = $queryBuilder->getQuery()->getArrayResult();
+        $results = $this->executeRawQuery($sql)->fetchAllAssociative();
 
         if (!$results) {
             return [];
@@ -40,7 +27,7 @@ class MysqlReadModelStockRepository extends MysqlRepository implements StockRead
                 id: $result['id'],
                 name: $result['name'],
                 ticker: $result['ticker'],
-                marketSymbol: $result['marketSymbol'],
+                marketSymbol: $result['market_symbol'],
                 currency: $result['currency'],
             );
         }

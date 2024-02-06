@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\Shared\Infrastructure\Symfony\Form;
+namespace PocketShares\Shared\Infrastructure\Symfony\Form\Type;
 
 use Money\Currencies\ISOCurrencies;
 use Symfony\Component\Form\AbstractType;

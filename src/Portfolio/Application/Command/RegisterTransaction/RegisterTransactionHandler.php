@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PocketShares\Portfolio\Application\Command\RegisterTransaction;
 
 use PocketShares\Portfolio\Domain\Exception\PortfolioNotFoundException;
+use PocketShares\Portfolio\Domain\Exception\PortfolioTransactionIsNotLocked;
 use PocketShares\Portfolio\Domain\Repository\PortfolioRepositoryInterface;
 use PocketShares\Portfolio\Domain\Transaction;
 use PocketShares\Portfolio\Domain\TransactionType;
@@ -25,6 +26,10 @@ class RegisterTransactionHandler implements CommandHandlerInterface
 
     public function __invoke(RegisterTransactionCommand $command): void
     {
+        if (!$command->isLocked()) {
+            throw new PortfolioTransactionIsNotLocked();
+        }
+
         $portfolio = $this->portfolioRepository->read($command->portfolioId);
 
         if (!$portfolio) {
@@ -38,11 +43,11 @@ class RegisterTransactionHandler implements CommandHandlerInterface
         }
 
         $transaction = new Transaction(
-            $stock,
-            Transaction::createTransactionDateFromString($command->transactionDate),
-            TransactionType::tryFrom($command->transactionType),
-            $command->numberOfShares ? new NumberOfShares($command->numberOfShares) : null,
-            $command->price ? MoneyFactory::create($command->price, $command->priceCurrency) : null,
+            stock: $stock,
+            transactionDate: Transaction::createTransactionDateFromString($command->transactionDate),
+            transactionType: TransactionType::tryFrom($command->transactionType),
+            price: $command->price ? MoneyFactory::create($command->price, $command->priceCurrency) : null,
+            numberOfShares: $command->numberOfShares ? new NumberOfShares($command->numberOfShares) : null,
         );
 
         $portfolio->registerTransaction($transaction);

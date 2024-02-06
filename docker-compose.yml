@@ -24,7 +24,7 @@ services:
     container_name: 'pocketshares-database'
     restart: 'unless-stopped'
     volumes:
-      - ./docker/volumes/mysql:/var/lib/mysql
+      - /home/parallels/docker/volumes/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: 'pocketshares'
       MYSQL_ROOT_PASSWORD: 'root'

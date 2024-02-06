@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PocketShares\Stock\Infrastructure\Symfony\Form\Type;
 
-use PocketShares\Shared\Infrastructure\Symfony\Form\CurrencyType;
+use PocketShares\Shared\Infrastructure\Symfony\Form\Type\CurrencyType;
 use PocketShares\Stock\Domain\MarketSymbol;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;

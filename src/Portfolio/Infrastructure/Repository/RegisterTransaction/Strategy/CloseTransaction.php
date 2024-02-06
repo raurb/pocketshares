@@ -35,7 +35,7 @@ class CloseTransaction extends AbstractTransactionProcessor implements RegisterT
         $newTransactionEntity = new PortfolioTransactionEntity(
             $portfolioEntity,
             $holding,
-            $newTransaction->numberOfShares,
+            $holding->getNumberOfShares(),
             $newTransaction->price,
             $newTransaction->transactionDate,
             $newTransaction->transactionType,

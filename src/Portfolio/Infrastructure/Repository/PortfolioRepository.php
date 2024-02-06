@@ -62,8 +62,8 @@ class PortfolioRepository implements PortfolioRepositoryInterface
                     stock: $holdingStock,
                     transactionDate: $transaction->getTransactionDate(),
                     transactionType: $transaction->getTransactionType(),
-                    numberOfShares: $transaction->getNumberOfShares(),
                     price: $transaction->getValue(),
+                    numberOfShares: $transaction->getNumberOfShares(),
                 );
             }
 
