@@ -20,4 +20,5 @@
 ###< symfony/phpunit-bridge ###
 
 .idea/
-docker/volumes/
+docker/database/volumes/
+.DS_Store
