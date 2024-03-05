@@ -16,6 +16,6 @@ class CreatePortfolioHandler implements CommandHandlerInterface
 
     public function __invoke(CreatePortfolioCommand $command): void
     {
-        $this->portfolioRepository->store(Portfolio::create($command->name, $command->currencyCode));
+        $this->portfolioRepository->store(Portfolio::createNew($command->name, $command->currencyCode));
     }
 }

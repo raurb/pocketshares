@@ -13,7 +13,10 @@ use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioHoldingEntity;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioTransactionEntity;
 use PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\TransactionRegistryProcessor;
+use PocketShares\Stock\Domain\DividendPayment;
 use PocketShares\Stock\Domain\Stock;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 
 class PortfolioRepository implements PortfolioRepositoryInterface
 {
@@ -79,6 +82,33 @@ class PortfolioRepository implements PortfolioRepositoryInterface
         );
     }
 
+    /** @return Portfolio[] */
+    public function readManyByStockTicker(string $stockTicker): array
+    {
+        $portfolios = [];
+        $connection = $this->entityManager->getConnection();
+
+        $sql = 'SELECT id FROM portfolio WHERE id IN (
+                    SELECT portfolio_id FROM portfolio_holding WHERE stock_id = (
+                        SELECT id FROM stock WHERE ticker = :ticker
+                     )
+               )';
+
+        $statement = $connection->prepare($sql);
+        $statement->bindValue('ticker', $stockTicker);
+        $result = $statement->executeQuery()->fetchAllAssociative();
+
+        if (!$result) {
+            return [];
+        }
+
+        foreach ($result as $item) {
+            $portfolios[] = $this->read($item['id']);
+        }
+
+        return $portfolios;
+    }
+
     private function getPortfolioEntity(int $portfolioId): ?PortfolioEntity
     {
         $portfolioRepository = $this->entityManager->getRepository(PortfolioEntity::class);
@@ -93,8 +123,13 @@ class PortfolioRepository implements PortfolioRepositoryInterface
             return;
         }
 
+        // @todo to bedzie do wywalenia po przeniesieniu transakcji z portfolio
         if ($portfolio->getNewTransaction()) {
             $portfolioEntity = $this->registerNewTransaction($portfolioEntity, $portfolio->getNewTransaction());
+        }
+
+        if ($portfolio->getRegisteredDividendPayments()) {
+            $portfolioEntity = $this->registerNewDividendPayments($portfolioEntity, $portfolio->getRegisteredDividendPayments());
         }
 
         $portfolioEntity->setName($portfolio->getName());
@@ -105,5 +140,19 @@ class PortfolioRepository implements PortfolioRepositoryInterface
     private function registerNewTransaction(PortfolioEntity $portfolioEntity, Transaction $newTransaction): PortfolioEntity
     {
         return $this->transactionStrategyResolver->process($portfolioEntity, $newTransaction);
+    }
+
+    private function registerNewDividendPayments(PortfolioEntity $portfolioEntity, array $registeredDividendPayments): PortfolioEntity
+    {
+        /** @var DividendPayment $dividendPayment */
+        foreach ($registeredDividendPayments as $dividendPayment) {
+            $portfolioEntity->addDividendPayment(new DividendPaymentEntity(
+                $portfolioEntity->getStockByTicker($dividendPayment->stock->ticker),
+                $dividendPayment->recordDate,
+                $dividendPayment->amount,
+            ));
+        }
+
+        return $portfolioEntity;
     }
 }

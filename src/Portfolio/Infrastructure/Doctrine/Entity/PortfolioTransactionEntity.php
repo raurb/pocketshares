@@ -34,7 +34,7 @@ class PortfolioTransactionEntity extends BaseEntity
     #[Orm\Column(name: 'transaction_date', type: 'date_immutable')]
     private \DateTimeImmutable $transactionDate;
 
-    #[Orm\Column(type: 'transaction_enum_type')]
+    #[Orm\Column(type: 'transaction_type')]
     private TransactionType $transactionType;
 
     public function __construct(

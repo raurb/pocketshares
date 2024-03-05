@@ -12,19 +12,21 @@ use PocketShares\Portfolio\Domain\Exception\CannotSellMoreStocksThanOwn;
 use PocketShares\Shared\Domain\AggregateRoot;
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Utilities\MoneyFactory;
+use PocketShares\Stock\Domain\DividendPayment;
 use PocketShares\Stock\Domain\Stock;
 
 class Portfolio extends AggregateRoot
 {
+    /**
+     * @todo zastanowic sie czy przerobic to na tablice nowych transakcji
+     * tutaj pojawi sie problem kolejnosci transakcji
+     * */
     private ?Transaction $newTransaction = null;
 
-    /**
-     * @param string $name
-     * @param Money $value
-     * @param Holding[] $holdings
-     * @param array $transactions
-     * @param int|null $portfolioId
-     */
+    /** @var DividendPayment[] */
+    private array $registeredDividendPayments = [];
+
+    //@todo ladowanie transakcji na "dzien dobry" moze nie byc najlepszym pomyslem
     public function __construct(
         private string $name,
         private Money  $value, //@todo tutaj ma byc wyliczana wartosc na podstawie wartosci pozycji
@@ -35,12 +37,12 @@ class Portfolio extends AggregateRoot
     {
     }
 
-    public static function create(
+    public static function createNew(
         string $name,
         string $currencyCode,
     ): self
     {
-        return new self($name, MoneyFactory::create(0, $currencyCode), []);
+        return new self($name, MoneyFactory::create(0, $currencyCode), [], []);
     }
 
     public function getName(): string
@@ -101,6 +103,11 @@ class Portfolio extends AggregateRoot
         return $this->newTransaction;
     }
 
+    public function getRegisteredDividendPayments(): array
+    {
+        return $this->registeredDividendPayments;
+    }
+
     public function searchForHolding(Stock $stock): ?Holding
     {
         foreach ($this->holdings as $holding) {
@@ -110,6 +117,14 @@ class Portfolio extends AggregateRoot
         }
 
         return null;
+    }
+
+    public function registerDividendPayment(DividendPayment $dividendPayment): void
+    {
+        //@todo zwieksz wartosc
+        if ($this->searchForHolding($dividendPayment->stock)) {
+            $this->registeredDividendPayments[] = $dividendPayment;
+        }
     }
 
     private function validateTransaction(Transaction $transaction): void

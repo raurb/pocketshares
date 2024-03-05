@@ -10,4 +10,5 @@ interface PortfolioRepositoryInterface
 {
     public function store(Portfolio $portfolio): void;
     public function read(int $portfolioId): ?Portfolio;
+    public function readManyByStockTicker(string $stockTicker);
 }

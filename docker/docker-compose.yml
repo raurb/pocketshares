@@ -11,8 +11,6 @@ services:
     volumes:
       - ../:/var/www
       - exclude:/var/www/docker
-      - exclude:/var/www/var
-      - exclude:/var/www/vendor
     environment:
       - HOSTNAME=pocketshares.local
       - PHP_IDE_CONFIG=serverName=pocketshares.local

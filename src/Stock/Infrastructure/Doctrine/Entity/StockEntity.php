@@ -28,7 +28,7 @@ class StockEntity extends BaseEntity
     #[Column(type: 'string', length: 5)]
     private string $ticker;
 
-    #[Column(type: 'market_symbol_enum_type', length: 10)]
+    #[Column(type: 'market_symbol', length: 10)]
     private MarketSymbol $marketSymbol;
 
     #[Column(type: 'currency_type', length: 3)]

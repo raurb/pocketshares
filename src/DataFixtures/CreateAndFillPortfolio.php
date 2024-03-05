@@ -12,6 +12,7 @@ use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioTransactionEn
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Utilities\MoneyFactory;
 use PocketShares\Stock\Domain\MarketSymbol;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
 use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 
 class CreateAndFillPortfolio extends Fixture
@@ -25,37 +26,37 @@ class CreateAndFillPortfolio extends Fixture
             new Currency('USD'),
         );
 
-        $broadcom = new StockEntity(
+        $broadcomStock = new StockEntity(
             'Broadcom Inc.',
             'AVGO',
             MarketSymbol::NYSE,
             new Currency('USD'),
         );
 
-        $microsoft = new StockEntity('Microsoft Corp.',
+        $microsoftStock = new StockEntity('Microsoft Corp.',
             'MSFT',
             MarketSymbol::NYSE,
             new Currency('USD'),
         );
 
-        $realityIncome = new StockEntity('Reality Income Inc.',
+        $realityIncomeStock = new StockEntity('Reality Income Inc.',
             'O',
             MarketSymbol::NYSE,
             new Currency('USD'),
         );
 
         $manager->persist($aaplStock);
-        $manager->persist($broadcom);
-        $manager->persist($microsoft);
-        $manager->persist($realityIncome);
+        $manager->persist($broadcomStock);
+        $manager->persist($microsoftStock);
+        $manager->persist($realityIncomeStock);
         $manager->flush();
 
         $portfolio = new PortfolioEntity('My first portfolio', 'USD');
 
         $aaplHolding = new PortfolioHoldingEntity($portfolio, $aaplStock, new NumberOfShares(14));
-        $broadcomHolding = new PortfolioHoldingEntity($portfolio, $broadcom, new NumberOfShares(3));
-        $microsoftHolding = new PortfolioHoldingEntity($portfolio, $microsoft, new NumberOfShares(5));
-        $realityIncomeHolding = new PortfolioHoldingEntity($portfolio, $realityIncome, new NumberOfShares(50));
+        $broadcomHolding = new PortfolioHoldingEntity($portfolio, $broadcomStock, new NumberOfShares(3));
+        $microsoftHolding = new PortfolioHoldingEntity($portfolio, $microsoftStock, new NumberOfShares(5));
+        $realityIncomeHolding = new PortfolioHoldingEntity($portfolio, $realityIncomeStock, new NumberOfShares(50));
 
         $aaplTransaction = new PortfolioTransactionEntity($portfolio,$aaplHolding, new NumberOfShares(12), MoneyFactory::create(1200, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
         $aaplTransaction2 = new PortfolioTransactionEntity($portfolio,$aaplHolding, new NumberOfShares(2), MoneyFactory::create(350, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
@@ -73,6 +74,14 @@ class CreateAndFillPortfolio extends Fixture
         $portfolio->getTransactions()->add($broadcomTransaction);
         $portfolio->getTransactions()->add($microsoftTransaction);
         $portfolio->getTransactions()->add($realityIncomeTransaction);
+
+        $aaplDividend = new DividendPaymentEntity($aaplStock, new \DateTimeImmutable(), MoneyFactory::create(0.98, 'USD'));
+        $broadcomDividend = new DividendPaymentEntity($broadcomStock, new \DateTimeImmutable(), MoneyFactory::create(5.24, 'USD'));
+        $microsofDividend = new DividendPaymentEntity($microsoftStock, new \DateTimeImmutable(), MoneyFactory::create(3.87, 'USD'));
+
+        $portfolio->addDividendPayment($aaplDividend);
+        $portfolio->addDividendPayment($broadcomDividend);
+        $portfolio->addDividendPayment($microsofDividend);
 
         $manager->persist($portfolio);
         $manager->flush();

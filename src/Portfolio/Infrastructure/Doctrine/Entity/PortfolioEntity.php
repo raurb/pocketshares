@@ -9,12 +9,18 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\InverseJoinColumn;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Table;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Money\Currency;
 use Money\Money;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Repository\PortfolioEntityRepository;
 use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 
 #[Entity(repositoryClass: PortfolioEntityRepository::class)]
 #[Table(name: "portfolio")]
@@ -34,12 +40,19 @@ class PortfolioEntity extends BaseEntity
     #[ORM\OneToMany(mappedBy: 'portfolio', targetEntity: PortfolioTransactionEntity::class, cascade: ['persist', 'remove'])]
     private Collection $transactions;
 
+    #[JoinTable(name: 'portfolio_dividend_payment')]
+    #[JoinColumn(name: 'portfolio_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'dividend_id', referencedColumnName: 'id')]
+    #[ManyToMany(targetEntity: DividendPaymentEntity::class, cascade: ['persist', 'remove'])]
+    private Collection $dividendPayments;
+
     public function __construct(string $name, string $currency)
     {
         $this->name = $name;
         $this->value = new Money(0, new Currency($currency));
         $this->holdings = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->dividendPayments = new ArrayCollection();
     }
 
     public function getName(): string
@@ -78,5 +91,19 @@ class PortfolioEntity extends BaseEntity
         }
 
         return null;
+    }
+
+    public function getStockByTicker(string $ticker): ?StockEntity
+    {
+        return $this->getHoldingByTicker($ticker)?->getStock();
+    }
+
+    public function addDividendPayment(DividendPaymentEntity $dividendPaymentEntity): void
+    {
+        if ($this->dividendPayments->contains($dividendPaymentEntity)) {
+            return;
+        }
+
+        $this->dividendPayments->add($dividendPaymentEntity);
     }
 }
