@@ -35,5 +35,9 @@
             <p><a href="{{ path('portfolio_transactions', {id: portfolio.id}) }}">Show transaction history</a></p>
         {% endif %}
 
+        {% if portfolio.hasDividends %}
+            <p><a href="{{ path('portfolio_dividends', {id: portfolio.id}) }}">Show dividends</a></p>
+        {% endif %}
+
     {% endblock %}
 {% endblock %}

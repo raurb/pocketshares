@@ -6,5 +6,5 @@ namespace PocketShares\Shared\Application\Query;
 
 interface QueryBusInterface
 {
-    public function ask(QueryInterface $query): mixed;
+    public function dispatch(QueryInterface $query): mixed;
 }

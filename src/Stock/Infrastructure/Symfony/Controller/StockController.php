@@ -6,11 +6,11 @@ namespace PocketShares\Stock\Infrastructure\Symfony\Controller;
 
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use PocketShares\Stock\Application\Command\CreateStock\CreateStockCommand;
-use PocketShares\Stock\Application\Query\GetAllStocks\GetAllStocksQuery;
+use PocketShares\System\Application\Query\GetAllSystemDividends\GetAllSystemDividendsQuery;
 use PocketShares\Stock\Infrastructure\Symfony\Form\Type\AddStockType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/stock', name: 'stock_')]
 class StockController extends ApiController
@@ -42,7 +42,7 @@ class StockController extends ApiController
     public function list(): Response
     {
         return $this->render('stock/_stock_list.html.twig', [
-            'stocks' => $this->queryBus->ask(new GetAllStocksQuery()),
+            'stocks' => $this->queryBus->dispatch(new GetAllSystemDividendsQuery()),
         ]);
     }
 }

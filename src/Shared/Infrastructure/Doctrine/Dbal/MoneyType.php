@@ -26,7 +26,7 @@ class MoneyType extends JsonType
             throw new CannotBuildMoneyException($value);
         }
 
-        return MoneyFactory::create($decoded['amount'], $decoded['currency']);
+        return MoneyFactory::create((int)$decoded['amount'], $decoded['currency']);
     }
 
     public function getName(): string

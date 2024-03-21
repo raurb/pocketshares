@@ -31,7 +31,7 @@ class RegisterSystemDividendHandler implements CommandHandlerInterface
 
         $dividendPayment = new DividendPayment(
             $stock,
-            \DateTimeImmutable::createFromFormat('Y-m-d', $command->recordDate),
+            $command->payoutDate,
             MoneyFactory::create($command->amount, $command->amountCurrency),
         );
 

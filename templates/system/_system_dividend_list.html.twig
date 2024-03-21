@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h1>System dividend list</h1>
+    {% block page_contents %}
+
+        <p><a href="{{ path('system_list') }}">Back to system actions</a></p>
+
+        <table class="table table-hover">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Ticker</th>
+            <th scope="col">Payout date</th>
+            <th scope="col">Price</th>
+            <th scope="col">Currency</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for dividend in dividends %}
+                <tr>
+                    <th scope="row">{{ dividend.id }}</th>
+                    <td>{{ dividend.stockTicker }}</td>
+                    <td>{{ dividend.payoutDate|date('Y-m-d') }}</td>
+                    <td>{{ dividend.amount / 100}}</td>
+                    <td>{{ dividend.amountCurrency }}</td>
+                </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+
+    {% endblock %}
+{% endblock %}

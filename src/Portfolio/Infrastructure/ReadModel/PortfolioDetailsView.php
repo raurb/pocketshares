@@ -14,13 +14,15 @@ readonly class PortfolioDetailsView
      * @param int $value
      * @param string $valueCurrency
      * @param PortfolioDetailsHoldingsView[] $holdings
+     * @param bool $hasDividends
      */
     public function __construct(
         public int    $id,
         public string $name,
         public int    $value,
         public string $valueCurrency,
-        public array $holdings,
+        public array  $holdings,
+        public bool   $hasDividends,
     )
     {
     }

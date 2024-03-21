@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h1>System actions:</h1>
+    {% block page_contents %}
+        <ul>
+            <li><a href="{{ path('system_dividend_register_dividend') }}">Register dividend</a></li>
+            <li><a href="{{ path('system_dividend_list') }}">System dividends</a></li>
+        </ul>
+    {% endblock %}
+{% endblock %}

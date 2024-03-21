@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\Stock\Application\Command\RegisterSystemDividend;
+namespace PocketShares\System\Infrastructure\ReadModel;
 
-use PocketShares\Shared\Application\Command\CommandInterface;
-
-readonly class RegisterSystemDividendCommand implements CommandInterface
+readonly class SystemDividendView
 {
     public function __construct(
+        public int                $id,
         public string             $stockTicker,
         public \DateTimeImmutable $payoutDate,
         public int                $amount,

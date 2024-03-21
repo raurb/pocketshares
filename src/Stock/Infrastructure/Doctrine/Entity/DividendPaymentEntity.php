@@ -13,8 +13,9 @@ use PocketShares\Stock\Infrastructure\Doctrine\Repository\DividendPaymentEntityR
 #[ORM\Table(name: "dividend_payment")]
 class DividendPaymentEntity extends BaseEntity
 {
-    #[Orm\OneToOne(targetEntity: StockEntity::class)]
-    private StockEntity $stockEntity;
+    #[Orm\ManyToOne(targetEntity: StockEntity::class)]
+    #[Orm\JoinColumn(name: 'stock_id', referencedColumnName: 'id')]
+    private StockEntity $stock;
 
     #[Orm\Column(name: 'record_date', type: 'date_immutable')]
     private \DateTimeImmutable $recordDate;
@@ -24,14 +25,14 @@ class DividendPaymentEntity extends BaseEntity
 
     public function __construct(StockEntity $stockEntity, \DateTimeImmutable $recordDate, Money $amount)
     {
-        $this->stockEntity = $stockEntity;
+        $this->stock = $stockEntity;
         $this->recordDate = $recordDate;
         $this->amount = $amount;
     }
 
-    public function getStockEntity(): StockEntity
+    public function getStock(): StockEntity
     {
-        return $this->stockEntity;
+        return $this->stock;
     }
 
     public function getRecordDate(): \DateTimeImmutable

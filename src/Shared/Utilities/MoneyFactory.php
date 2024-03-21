@@ -11,14 +11,14 @@ use PocketShares\Stock\Domain\Exception\UnknownCurrencyException;
 
 class MoneyFactory
 {
-    public static function create(int|string $amount, string $currencyCode): Money
+    public static function create(int $amount, string $currencyCode): Money
     {
         $currency = new Currency($currencyCode);
         if (!(new ISOCurrencies())->contains($currency)) {
             throw new UnknownCurrencyException($currency->getCode());
         }
 
-        return new Money((string)($amount), $currency);
+        return new Money($amount, $currency);
     }
 
     public static function fromJson(string $json): Money

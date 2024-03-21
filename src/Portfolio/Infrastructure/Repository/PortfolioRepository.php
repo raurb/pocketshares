@@ -146,11 +146,12 @@ class PortfolioRepository implements PortfolioRepositoryInterface
     {
         /** @var DividendPayment $dividendPayment */
         foreach ($registeredDividendPayments as $dividendPayment) {
-            $portfolioEntity->addDividendPayment(new DividendPaymentEntity(
+            $newDividendPayment = new DividendPaymentEntity(
                 $portfolioEntity->getStockByTicker($dividendPayment->stock->ticker),
                 $dividendPayment->recordDate,
                 $dividendPayment->amount,
-            ));
+            );
+            $portfolioEntity->addDividendPayment($newDividendPayment);
         }
 
         return $portfolioEntity;

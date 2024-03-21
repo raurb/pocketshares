@@ -2,35 +2,31 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\Portfolio\Infrastructure\Symfony\Form\Type;
+namespace PocketShares\System\Infrastructure\Symfony\Form;
 
-use PocketShares\Portfolio\Domain\TransactionType;
 use PocketShares\Shared\Infrastructure\Symfony\Form\QueryAwareType;
 use PocketShares\Shared\Infrastructure\Symfony\Form\Type\PriceType;
-use PocketShares\Stock\Application\Query\GetAllStocks\GetAllSystemDividendsQuery;
+use PocketShares\Stock\Application\Query\GetAllStocks\GetAllStocksQuery;
 use PocketShares\Stock\Infrastructure\ReadModel\StockView;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class RegisterTransactionType extends QueryAwareType
+class RegisterSystemDividendType extends QueryAwareType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('stock_ticker', ChoiceType::class, ['choices' => $this->getStockChoices(), 'required' => true, 'label' => 'Stock'])
-            ->add('transaction_type', ChoiceType::class, ['choices' => TransactionType::getLabels(), 'required' => true, 'label' => 'Transaction type'])
-            ->add('number_of_shares', NumberType::class, ['required' => false])
+            ->add('payout_date', DateType::class)
             ->add('price', PriceType::class, ['label' => false, 'required' => true])
-            ->add('transaction_date', DateType::class)
-            ->add('register_transaction', SubmitType::class);
+            ->add('register_dividend', SubmitType::class);
     }
 
     private function getStockChoices(): array
     {
-        $stocks = $this->queryBus->dispatch(new GetAllSystemDividendsQuery());
+        $stocks = $this->queryBus->dispatch(new GetAllStocksQuery());
 
         if (!$stocks) {
             return [];

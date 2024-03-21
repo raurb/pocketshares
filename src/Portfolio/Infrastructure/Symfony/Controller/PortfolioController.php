@@ -8,7 +8,7 @@ use PocketShares\Portfolio\Application\Command\CreatePortfolio\CreatePortfolioCo
 use PocketShares\Portfolio\Application\Command\RegisterTransaction\RegisterTransactionCommand;
 use PocketShares\Portfolio\Application\Query\GetAllPortfolios\GetAllPortfoliosQuery;
 use PocketShares\Portfolio\Application\Query\GetPortfolioHoldings\GetPortfolioDetailsQuery;
-use PocketShares\Portfolio\Application\Query\GetPortfolioTransactions\GetPortfolioTransactionsQuery;
+use PocketShares\Portfolio\Application\Query\GetPortfolioDividends\GetPortfolioDividendsQuery;
 use PocketShares\Portfolio\Domain\TransactionType;
 use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\CreatePortfolioType;
 use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\RegisterTransactionType;
@@ -16,7 +16,7 @@ use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/portfolio', name: 'portfolio_')]
 class PortfolioController extends ApiController
@@ -37,7 +37,7 @@ class PortfolioController extends ApiController
             $this->commandBus->dispatch($command);
 
             return $this->render('portfolio/_portfolio_list.html.twig', [
-                'portfolios' => $this->queryBus->ask(new GetAllPortfoliosQuery()),
+                'portfolios' => $this->queryBus->dispatch(new GetAllPortfoliosQuery()),
             ]);
         }
 
@@ -50,17 +50,15 @@ class PortfolioController extends ApiController
     public function list(): Response
     {
         return $this->render('portfolio/_portfolio_list.html.twig', [
-            'portfolios' => $this->queryBus->ask(new GetAllPortfoliosQuery()),
+            'portfolios' => $this->queryBus->dispatch(new GetAllPortfoliosQuery()),
         ]);
     }
 
     #[Route('/{id}/details', name: 'details', methods: ['GET'])]
     public function portfolioHoldings(int $id): Response
     {
-        $portfolioView = $this->queryBus->ask(new GetPortfolioDetailsQuery($id));
-
         return $this->render('portfolio/_portfolio_details.html.twig', [
-            'portfolio' => $portfolioView ?? [],
+            'portfolio' => $this->queryBus->dispatch(new GetPortfolioDetailsQuery($id)) ?? [],
         ]);
     }
 
@@ -84,10 +82,8 @@ class PortfolioController extends ApiController
 
             $this->commandBus->dispatch($command);
 
-            $portfolioView = $this->queryBus->ask(new GetPortfolioDetailsQuery($id));
-
             return $this->render('portfolio/_portfolio_details.html.twig', [
-                'portfolio' => $portfolioView ?? [],
+                'portfolio' => $this->queryBus->dispatch(new GetPortfolioDetailsQuery($id)) ?? [],
             ]);
         }
 
@@ -100,11 +96,18 @@ class PortfolioController extends ApiController
     #[Route('/{id}/transactions', name: 'transactions', methods: ['GET'])]
     public function portfolioTransactions(int $id): Response
     {
-        $transactions = $this->queryBus->ask(new GetPortfolioTransactionsQuery($id));
-
         return $this->render('portfolio/_portfolio_transactions.html.twig', [
             'portfolioId' => $id,
-            'transactions' => $transactions ?? [],
+            'transactions' => $this->queryBus->dispatch(new GetPortfolioDividendsQuery($id)) ?? [],
+        ]);
+    }
+
+    #[Route('/{id}/dividends', name: 'dividends', methods: ['GET'])]
+    public function portfolioDividends(int $id): Response
+    {
+        return $this->render('portfolio/_portfolio_dividend_list.html.twig', [
+            'portfolioId' => $id,
+            'dividends' => $this->queryBus->dispatch(new GetPortfolioDividendsQuery($id)) ?? [],
         ]);
     }
 }

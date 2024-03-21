@@ -15,7 +15,7 @@ final class MessengerQueryBus implements QueryBusInterface
     {
     }
 
-    public function ask(QueryInterface $query): mixed
+    public function dispatch(QueryInterface $query): mixed
     {
         $envelope = $this->messengerBusQuery->dispatch($query);
 

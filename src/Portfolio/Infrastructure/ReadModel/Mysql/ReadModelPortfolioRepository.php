@@ -7,6 +7,7 @@ namespace PocketShares\Portfolio\Infrastructure\ReadModel\Mysql;
 use PocketShares\Portfolio\Domain\Repository\PortfolioReadModelInterface;
 use PocketShares\Portfolio\Infrastructure\ReadModel\PortfolioDetails\PortfolioDetailsHoldingsView;
 use PocketShares\Portfolio\Infrastructure\ReadModel\PortfolioDetailsView;
+use PocketShares\Portfolio\Infrastructure\ReadModel\PortfolioDividendView;
 use PocketShares\Portfolio\Infrastructure\ReadModel\PortfolioView;
 use PocketShares\Portfolio\Infrastructure\ReadModel\TransactionView;
 use PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository\MysqlRepository;
@@ -63,6 +64,8 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
 
         $result = $this->executeRawQuery($sql, ['portfolioId' => $portfolioId])->fetchAllAssociative();
 
+        $hasDividends = $this->executeRawQuery('SELECT COUNT(*) as cnt FROM portfolio_dividend_payment WHERE portfolio_id = :portfolioId', ['portfolioId' => $portfolioId])->fetchAllAssociative();
+
         if (!$result) {
             return null;
         }
@@ -98,6 +101,7 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
             value: (int)$portfolioValueAmount,
             valueCurrency: $portfolioValueCurrency,
             holdings: $holdings,
+            hasDividends: $hasDividends && $hasDividends[0]['cnt'],
         );
 
     }
@@ -135,5 +139,39 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
         }
 
         return $transactions;
+    }
+
+    public function getPortfolioDividends(int $portfolioId, ?\DateTimeImmutable $from = null, ?\DateTimeImmutable $to = null): array
+    {
+        $sql = "SELECT
+                dp.id,
+                s.ticker,
+                dp.record_date,
+                dp.amount ->> '$.amount' / 100  AS dividend_amount,
+                dp.amount ->> '$.currency' AS dividend_currency
+                FROM dividend_payment dp
+                LEFT JOIN stock s ON s.id = dp.stock_id
+                WHERE dp.id IN (SELECT dividend_id FROM portfolio_dividend_payment WHERE portfolio_id = :portfolioId);
+                ";
+
+        $results = $this->executeRawQuery($sql, ['portfolioId' => $portfolioId])->fetchAllAssociative();
+
+        if (!$results) {
+            return [];
+        }
+
+        $portfolioDividends = [];
+
+        foreach ($results as $dividend) {
+            $portfolioDividends[] = new PortfolioDividendView(
+                id: $dividend['id'],
+                stockTicker: $dividend['ticker'],
+                payoutDate: \DateTimeImmutable::createFromFormat('Y-m-d', $dividend['record_date']),
+                amount: (int)($dividend['dividend_amount'] * 100),
+                amountCurrency: $dividend['dividend_currency'],
+            );
+        }
+
+        return $portfolioDividends;
     }
 }
