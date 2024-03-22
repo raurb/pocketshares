@@ -11,7 +11,7 @@ use PocketShares\Stock\Domain\Stock;
 
 readonly class Transaction
 {
-    public const TRANSACTION_DATE_FORMAT = 'Y-m-d H:i:s';
+    public const string TRANSACTION_DATE_FORMAT = 'Y-m-d H:i:s';
 
     public function __construct(
         public Stock              $stock,
@@ -21,16 +21,5 @@ readonly class Transaction
         public ?NumberOfShares    $numberOfShares,
     )
     {
-    }
-
-    public static function createTransactionDateFromString(string $date): \DateTimeImmutable
-    {
-        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $date);
-
-        if (!$dateTime) {
-            throw new InvalidTransactionDate($date);
-        }
-
-        return $dateTime;
     }
 }

@@ -17,7 +17,7 @@ class ReadModelSystemDividendsRepository extends MysqlRepository implements Syst
                 dp.id,
                 s.ticker,
                 dp.record_date,
-                dp.amount ->> '$.amount' / 100  AS dividend_amount,
+                dp.amount ->> '$.amount'  AS dividend_amount,
                 dp.amount ->> '$.currency' AS dividend_currency
                 FROM dividend_payment dp
                 LEFT JOIN stock s ON s.id = dp.stock_id;
@@ -36,7 +36,7 @@ class ReadModelSystemDividendsRepository extends MysqlRepository implements Syst
                 id: $dividend['id'],
                 stockTicker: $dividend['ticker'],
                 payoutDate: \DateTimeImmutable::createFromFormat('Y-m-d', $dividend['record_date']),
-                amount: (int)($dividend['dividend_amount'] * 100),
+                amount: (int)$dividend['dividend_amount'],
                 amountCurrency: $dividend['dividend_currency'],
             );
         }

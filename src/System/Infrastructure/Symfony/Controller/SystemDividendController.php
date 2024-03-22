@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace PocketShares\System\Infrastructure\Symfony\Controller;
 
-use PocketShares\Portfolio\Application\Query\GetPortfolioHoldings\GetPortfolioDetailsQuery;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
-use PocketShares\Stock\Application\Command\RegisterSystemDividend\RegisterSystemDividendCommand;
+use PocketShares\System\Application\Command\RegisterSystemDividend\RegisterSystemDividendCommand;
 use PocketShares\System\Application\Query\GetAllSystemDividends\GetAllSystemDividendsQuery;
-use PocketShares\System\Infrastructure\ReadModel\SystemDividendView;
 use PocketShares\System\Infrastructure\Symfony\Form\RegisterSystemDividendType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

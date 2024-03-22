@@ -7,7 +7,7 @@ namespace PocketShares\Portfolio\Infrastructure\Symfony\Form\Type;
 use PocketShares\Portfolio\Domain\TransactionType;
 use PocketShares\Shared\Infrastructure\Symfony\Form\QueryAwareType;
 use PocketShares\Shared\Infrastructure\Symfony\Form\Type\PriceType;
-use PocketShares\Stock\Application\Query\GetAllStocks\GetAllSystemDividendsQuery;
+use PocketShares\Stock\Application\Query\GetAllStocks\GetAllStocksQuery;
 use PocketShares\Stock\Infrastructure\ReadModel\StockView;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -30,7 +30,7 @@ class RegisterTransactionType extends QueryAwareType
 
     private function getStockChoices(): array
     {
-        $stocks = $this->queryBus->dispatch(new GetAllSystemDividendsQuery());
+        $stocks = $this->queryBus->dispatch(new GetAllStocksQuery());
 
         if (!$stocks) {
             return [];

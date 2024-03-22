@@ -103,7 +103,6 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
             holdings: $holdings,
             hasDividends: $hasDividends && $hasDividends[0]['cnt'],
         );
-
     }
 
     public function getPortfolioTransactions(int $portfolioId): array
@@ -147,7 +146,7 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
                 dp.id,
                 s.ticker,
                 dp.record_date,
-                dp.amount ->> '$.amount' / 100  AS dividend_amount,
+                dp.amount ->> '$.amount' AS dividend_amount,
                 dp.amount ->> '$.currency' AS dividend_currency
                 FROM dividend_payment dp
                 LEFT JOIN stock s ON s.id = dp.stock_id
@@ -167,7 +166,7 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
                 id: $dividend['id'],
                 stockTicker: $dividend['ticker'],
                 payoutDate: \DateTimeImmutable::createFromFormat('Y-m-d', $dividend['record_date']),
-                amount: (int)($dividend['dividend_amount'] * 100),
+                amount: (int)$dividend['dividend_amount'],
                 amountCurrency: $dividend['dividend_currency'],
             );
         }

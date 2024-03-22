@@ -9,7 +9,7 @@ use PocketShares\Portfolio\Application\Command\RegisterTransaction\RegisterTrans
 use PocketShares\Portfolio\Application\Query\GetAllPortfolios\GetAllPortfoliosQuery;
 use PocketShares\Portfolio\Application\Query\GetPortfolioHoldings\GetPortfolioDetailsQuery;
 use PocketShares\Portfolio\Application\Query\GetPortfolioDividends\GetPortfolioDividendsQuery;
-use PocketShares\Portfolio\Domain\TransactionType;
+use PocketShares\Portfolio\Application\Query\GetPortfolioTransactions\GetPortfolioTransactionsQuery;
 use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\CreatePortfolioType;
 use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\RegisterTransactionType;
 use PocketShares\Shared\Domain\NumberOfShares;
@@ -70,13 +70,13 @@ class PortfolioController extends ApiController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            $command = RegisterTransactionCommand::create(
+            $command = new RegisterTransactionCommand(
                 portfolioId: $id,
                 stockTicker: $formData['stock_ticker'],
-                transactionDate: $formData['transaction_date'],
-                transactionType: TransactionType::tryFrom($formData['transaction_type']),
-                price: $formData['price']['price'],
-                numberOfShares: new NumberOfShares($formData['number_of_shares'] ?? 0),
+                transactionDate: \DateTimeImmutable::createFromMutable($formData['transaction_date']),
+                transactionType: $formData['transaction_type'],
+                price: (int)($formData['price']['price'] * 100),
+                numberOfShares: (new NumberOfShares($formData['number_of_shares'] ?? 0))->getNumberOfShares(),
                 priceCurrency: $formData['price']['currency'],
             );
 
@@ -98,7 +98,7 @@ class PortfolioController extends ApiController
     {
         return $this->render('portfolio/_portfolio_transactions.html.twig', [
             'portfolioId' => $id,
-            'transactions' => $this->queryBus->dispatch(new GetPortfolioDividendsQuery($id)) ?? [],
+            'transactions' => $this->queryBus->dispatch(new GetPortfolioTransactionsQuery($id)) ?? [],
         ]);
     }
 
