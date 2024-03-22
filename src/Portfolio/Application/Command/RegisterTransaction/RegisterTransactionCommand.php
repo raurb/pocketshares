@@ -13,7 +13,7 @@ final class RegisterTransactionCommand implements CommandInterface
         readonly public string             $stockTicker,
         readonly public \DateTimeImmutable $transactionDate,
         readonly public string             $transactionType,
-        readonly public int                $price,
+        readonly public int                $pricePerShare,
         readonly public ?float             $numberOfShares,
         readonly public ?string            $priceCurrency,
     )

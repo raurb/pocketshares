@@ -33,7 +33,7 @@ class BuyTransaction extends AbstractTransactionProcessor implements RegisterTra
             $portfolioEntity,
             $holding,
             $newTransaction->numberOfShares,
-            $newTransaction->price,
+            $newTransaction->pricePerShare,
             $newTransaction->transactionDate,
             $newTransaction->transactionType,
         );

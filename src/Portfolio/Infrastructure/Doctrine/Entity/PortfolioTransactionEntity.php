@@ -29,7 +29,7 @@ class PortfolioTransactionEntity extends BaseEntity
     private NumberOfShares $numberOfShares;
 
     #[Orm\Column(type: 'money_type')]
-    private Money $value;
+    private Money $pricePerShare;
 
     #[Orm\Column(name: 'transaction_date', type: 'date_immutable')]
     private \DateTimeImmutable $transactionDate;
@@ -49,7 +49,7 @@ class PortfolioTransactionEntity extends BaseEntity
         $this->portfolioHolding = $portfolioHolding;
         $this->stockTicker = $portfolioHolding->getStock()->getTicker();
         $this->numberOfShares = $numberOfShares;
-        $this->value = $value;
+        $this->pricePerShare = $value;
         $this->transactionDate = $transactionDate;
         $this->transactionType = $transactionType;
     }
@@ -79,9 +79,9 @@ class PortfolioTransactionEntity extends BaseEntity
         return $this->numberOfShares;
     }
 
-    public function getValue(): Money
+    public function getPricePerShare(): Money
     {
-        return $this->value;
+        return $this->pricePerShare;
     }
 
     public function getTransactionDate(): \DateTimeImmutable

@@ -41,7 +41,7 @@ class RegisterTransactionHandler implements CommandHandlerInterface
             stock: $stock,
             transactionDate: $command->transactionDate,
             transactionType: TransactionType::tryFrom($command->transactionType),
-            price: $command->price ? MoneyFactory::create($command->price, $command->priceCurrency) : null,
+            pricePerShare: $command->pricePerShare ? MoneyFactory::create($command->pricePerShare, $command->priceCurrency) : null,
             numberOfShares: $command->numberOfShares ? new NumberOfShares($command->numberOfShares) : null,
         );
 

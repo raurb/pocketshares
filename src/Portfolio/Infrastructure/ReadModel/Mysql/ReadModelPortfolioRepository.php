@@ -111,8 +111,8 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
             id, 
             stock_ticker, 
             number_of_shares,                    
-            value ->> '$.amount' AS transaction_value_amount,
-            value ->> '$.currency' AS transaction_value_currency,
+            price_per_share ->> '$.amount' AS price_per_share_amount,
+            price_per_share ->> '$.currency' AS price_per_share_currency,
             transaction_date,
             transaction_type
             FROM portfolio_transaction WHERE portfolio_id = :portfolioId";
@@ -130,8 +130,8 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
                 transactionId: $item['id'],
                 stockTicker: $item['stock_ticker'],
                 numberOfShares: (float)$item['number_of_shares'],
-                transactionValue: (int)$item['transaction_value_amount'],
-                transactionCurrency: $item['transaction_value_currency'],
+                pricePerShare: (int)$item['price_per_share_amount'],
+                transactionCurrency: $item['price_per_share_currency'],
                 transactionDate: $item['transaction_date'],
                 transactionType: $item['transaction_type'],
             );

@@ -70,7 +70,7 @@ class SellTransaction implements RegisterTransactionStrategyInterface
             $portfolioEntity,
             $holding,
             $newTransaction->numberOfShares,
-            $newTransaction->price,
+            $newTransaction->pricePerShare,
             $newTransaction->transactionDate,
             $newTransaction->transactionType,
         );

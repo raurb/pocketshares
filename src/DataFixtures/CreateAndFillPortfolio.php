@@ -58,11 +58,11 @@ class CreateAndFillPortfolio extends Fixture
         $microsoftHolding = new PortfolioHoldingEntity($portfolio, $microsoftStock, new NumberOfShares(5));
         $realityIncomeHolding = new PortfolioHoldingEntity($portfolio, $realityIncomeStock, new NumberOfShares(50));
 
-        $aaplTransaction = new PortfolioTransactionEntity($portfolio,$aaplHolding, new NumberOfShares(12), MoneyFactory::create(1200, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
-        $aaplTransaction2 = new PortfolioTransactionEntity($portfolio,$aaplHolding, new NumberOfShares(2), MoneyFactory::create(350, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
-        $broadcomTransaction = new PortfolioTransactionEntity($portfolio,$broadcomHolding, new NumberOfShares(3), MoneyFactory::create(3300, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
-        $microsoftTransaction = new PortfolioTransactionEntity($portfolio,$microsoftHolding, new NumberOfShares(5), MoneyFactory::create(1750, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
-        $realityIncomeTransaction = new PortfolioTransactionEntity($portfolio,$realityIncomeHolding, new NumberOfShares(50), MoneyFactory::create(300, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
+        $aaplTransaction = new PortfolioTransactionEntity($portfolio,$aaplHolding, new NumberOfShares(12), MoneyFactory::create(17228, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
+        $aaplTransaction2 = new PortfolioTransactionEntity($portfolio,$aaplHolding, new NumberOfShares(2), MoneyFactory::create(17312, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
+        $broadcomTransaction = new PortfolioTransactionEntity($portfolio,$broadcomHolding, new NumberOfShares(3), MoneyFactory::create(135347, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
+        $microsoftTransaction = new PortfolioTransactionEntity($portfolio,$microsoftHolding, new NumberOfShares(5), MoneyFactory::create(42823, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
+        $realityIncomeTransaction = new PortfolioTransactionEntity($portfolio,$realityIncomeHolding, new NumberOfShares(50), MoneyFactory::create(5208, 'USD'), new \DateTimeImmutable(), TransactionType::TYPE_BUY);
 
         $portfolio->getHoldings()->add($aaplHolding);
         $portfolio->getHoldings()->add($broadcomHolding);

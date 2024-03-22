@@ -11,7 +11,8 @@
             <tr>
                 <th scope="col">Ticker</th>
                 <th scope="col">Shares</th>
-                <th scope="col">Value</th>
+                <th scope="col">Price per share</th>
+                <th scope="col">Transaction value</th>
                 <th scope="col">Date</th>
                 <th scope="col">Type</th>
             </tr>
@@ -21,7 +22,8 @@
                 <tr>
                     <th scope="row">{{ transaction.stockTicker }}</th>
                     <td>{{ transaction.numberOfShares }}</td>
-                    <td>{{ transaction.transactionValue }} {{ transaction.transactionCurrency }}</td>
+                    <td>{{ transaction.pricePerShare / 100 }} {{ transaction.transactionCurrency }}</td>
+                    <td>{{ transaction.numberOfShares * transaction.pricePerShare / 100}} {{ transaction.transactionCurrency }}</td>
                     <td>{{ transaction.transactionDate }}</td>
                     <td>{{ transaction.transactionType }}</td>
                 </tr>

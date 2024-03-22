@@ -23,7 +23,7 @@ class RegisterTransactionType extends QueryAwareType
             ->add('stock_ticker', ChoiceType::class, ['choices' => $this->getStockChoices(), 'required' => true, 'label' => 'Stock'])
             ->add('transaction_type', ChoiceType::class, ['choices' => TransactionType::getLabels(), 'required' => true, 'label' => 'Transaction type'])
             ->add('number_of_shares', NumberType::class, ['required' => false])
-            ->add('price', PriceType::class, ['label' => false, 'required' => true])
+            ->add('price', PriceType::class, ['label' => 'Price per share', 'required' => true])
             ->add('transaction_date', DateType::class)
             ->add('register_transaction', SubmitType::class);
     }

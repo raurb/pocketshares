@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PocketShares\Portfolio\Domain;
 
 use Money\Money;
-use PocketShares\Portfolio\Domain\Exception\InvalidTransactionDate;
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Stock\Domain\Stock;
 
@@ -17,7 +16,7 @@ readonly class Transaction
         public Stock              $stock,
         public \DateTimeImmutable $transactionDate,
         public TransactionType    $transactionType,
-        public Money             $price,
+        public Money              $pricePerShare,
         public ?NumberOfShares    $numberOfShares,
     )
     {

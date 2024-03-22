@@ -75,7 +75,7 @@ class PortfolioController extends ApiController
                 stockTicker: $formData['stock_ticker'],
                 transactionDate: \DateTimeImmutable::createFromMutable($formData['transaction_date']),
                 transactionType: $formData['transaction_type'],
-                price: (int)($formData['price']['price'] * 100),
+                pricePerShare: (int)($formData['price']['price'] * 100),
                 numberOfShares: (new NumberOfShares($formData['number_of_shares'] ?? 0))->getNumberOfShares(),
                 priceCurrency: $formData['price']['currency'],
             );
