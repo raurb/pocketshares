@@ -19,7 +19,7 @@ class PortfolioHoldingEntity extends BaseEntity
     #[Orm\ManyToOne(targetEntity: PortfolioEntity::class, inversedBy: 'holdings')]
     private PortfolioEntity $portfolio;
 
-    #[Orm\OneToOne(targetEntity: StockEntity::class)]
+    #[Orm\ManyToOne(targetEntity: StockEntity::class)]
     private StockEntity $stock;
 
     #[Orm\Column(name: 'number_of_shares', type: 'number_of_shares_type', precision: NumberOfShares::PRECISION)]

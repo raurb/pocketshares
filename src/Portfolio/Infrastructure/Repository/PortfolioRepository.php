@@ -11,12 +11,10 @@ use PocketShares\Portfolio\Domain\Repository\PortfolioRepositoryInterface;
 use PocketShares\Portfolio\Domain\Transaction;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioHoldingEntity;
-use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioTransactionEntity;
 use PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\TransactionRegistryProcessor;
 use PocketShares\Stock\Domain\DividendPayment;
 use PocketShares\Stock\Domain\Stock;
 use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 
 class PortfolioRepository implements PortfolioRepositoryInterface
 {
@@ -48,7 +46,6 @@ class PortfolioRepository implements PortfolioRepositoryInterface
         }
 
         $holdings = [];
-        $transactions = [];
 
         /** @var PortfolioHoldingEntity $holding */
         foreach ($portfolioEntity->getHoldings() as $holding) {
@@ -59,16 +56,6 @@ class PortfolioRepository implements PortfolioRepositoryInterface
                 marketSymbol: $holding->getStock()->getMarketSymbol(),
                 currency: $holding->getStock()->getCurrency(),
             );
-            /** @var PortfolioTransactionEntity $transaction */
-            foreach ($holding->getTransactions() as $transaction) {
-                $holdingTransactions[] = $transactions[] = new Transaction(
-                    stock: $holdingStock,
-                    transactionDate: $transaction->getTransactionDate(),
-                    transactionType: $transaction->getTransactionType(),
-                    price: $transaction->getValue(),
-                    numberOfShares: $transaction->getNumberOfShares(),
-                );
-            }
 
             $holdings[] = new Holding($holdingStock, clone $holding->getNumberOfShares(), $holdingTransactions);
         }
@@ -77,7 +64,6 @@ class PortfolioRepository implements PortfolioRepositoryInterface
             $portfolioEntity->getName(),
             $portfolioEntity->getValue(),
             $holdings,
-            $transactions,
             $portfolioId,
         );
     }
@@ -128,8 +114,8 @@ class PortfolioRepository implements PortfolioRepositoryInterface
             $portfolioEntity = $this->registerNewTransaction($portfolioEntity, $portfolio->getNewTransaction());
         }
 
-        if ($portfolio->getRegisteredDividendPayments()) {
-            $portfolioEntity = $this->registerNewDividendPayments($portfolioEntity, $portfolio->getRegisteredDividendPayments());
+        if ($portfolio->getNewDividends()) {
+            $portfolioEntity = $this->registerNewDividendPayments($portfolioEntity, $portfolio->getNewDividends());
         }
 
         $portfolioEntity->setName($portfolio->getName());

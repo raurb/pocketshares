@@ -24,15 +24,13 @@ class Portfolio extends AggregateRoot
     private ?Transaction $newTransaction = null;
 
     /** @var DividendPayment[] */
-    private array $registeredDividendPayments = [];
+    private array $newDividends = [];
 
-    //@todo ladowanie transakcji na "dzien dobry" moze nie byc najlepszym pomyslem
     public function __construct(
-        private string $name,
-        private Money  $value, //@todo tutaj ma byc wyliczana wartosc na podstawie wartosci pozycji
-        private array  $holdings = [],
-        private array  $transactions = [],
-        private ?int   $portfolioId = null,
+        private readonly string $name,
+        private readonly Money  $value, //@todo tutaj ma byc wyliczana wartosc na podstawie wartosci pozycji
+        private readonly array  $holdings = [],
+        private readonly ?int   $portfolioId = null,
     )
     {
     }
@@ -42,7 +40,7 @@ class Portfolio extends AggregateRoot
         string $currencyCode,
     ): self
     {
-        return new self($name, MoneyFactory::create(0, $currencyCode), [], []);
+        return new self($name, MoneyFactory::create(0, $currencyCode), []);
     }
 
     public function getName(): string
@@ -58,18 +56,6 @@ class Portfolio extends AggregateRoot
     public function getCurrency(): Currency
     {
         return $this->getValue()->getCurrency();
-    }
-
-    /** @return Holding[] */
-    public function getHoldings(): array
-    {
-        return $this->holdings;
-    }
-
-    /** @return Transaction[] */
-    public function getTransactions(): array
-    {
-        return $this->transactions;
     }
 
     public function getPortfolioId(): ?int
@@ -95,7 +81,7 @@ class Portfolio extends AggregateRoot
         }
 
         $holding->registerTransaction($transaction);
-        $this->transactions[] = $this->newTransaction = $transaction;
+        $this->newTransaction = $transaction;
     }
 
     public function getNewTransaction(): ?Transaction
@@ -103,9 +89,9 @@ class Portfolio extends AggregateRoot
         return $this->newTransaction;
     }
 
-    public function getRegisteredDividendPayments(): array
+    public function getNewDividends(): array
     {
-        return $this->registeredDividendPayments;
+        return $this->newDividends;
     }
 
     public function searchForHolding(Stock $stock): ?Holding
@@ -123,7 +109,7 @@ class Portfolio extends AggregateRoot
     {
         //@todo zwieksz wartosc
         if ($this->searchForHolding($dividendPayment->stock)) {
-            $this->registeredDividendPayments[] = $dividendPayment;
+            $this->newDividends[] = $dividendPayment;
         }
     }
 
