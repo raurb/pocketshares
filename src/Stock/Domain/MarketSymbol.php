@@ -8,4 +8,5 @@ enum MarketSymbol: string
 {
     case NYSE = 'NYSE';
     case NASDAQ = 'NASDAQ';
+    case BATS = 'BATS';
 }

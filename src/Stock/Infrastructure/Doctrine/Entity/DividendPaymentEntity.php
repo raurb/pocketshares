@@ -17,16 +17,16 @@ class DividendPaymentEntity extends BaseEntity
     #[Orm\JoinColumn(name: 'stock_id', referencedColumnName: 'id')]
     private StockEntity $stock;
 
-    #[Orm\Column(name: 'record_date', type: 'date_immutable')]
-    private \DateTimeImmutable $recordDate;
+    #[Orm\Column(name: 'payout_date', type: 'date_immutable')]
+    private \DateTimeImmutable $payoutDate;
 
     #[ORM\Column(type: 'money_type')]
     private Money $amount;
 
-    public function __construct(StockEntity $stockEntity, \DateTimeImmutable $recordDate, Money $amount)
+    public function __construct(StockEntity $stockEntity, \DateTimeImmutable $payoutDate, Money $amount)
     {
         $this->stock = $stockEntity;
-        $this->recordDate = $recordDate;
+        $this->payoutDate = $payoutDate;
         $this->amount = $amount;
     }
 
@@ -35,9 +35,9 @@ class DividendPaymentEntity extends BaseEntity
         return $this->stock;
     }
 
-    public function getRecordDate(): \DateTimeImmutable
+    public function getPayoutDate(): \DateTimeImmutable
     {
-        return $this->recordDate;
+        return $this->payoutDate;
     }
 
     public function getAmount(): Money

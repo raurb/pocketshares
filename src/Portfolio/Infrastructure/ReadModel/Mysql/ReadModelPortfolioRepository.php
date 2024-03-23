@@ -145,7 +145,7 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
         $sql = "SELECT
                 dp.id,
                 s.ticker,
-                dp.record_date,
+                dp.payout_date,
                 dp.amount ->> '$.amount' AS dividend_amount,
                 dp.amount ->> '$.currency' AS dividend_currency
                 FROM dividend_payment dp
@@ -165,7 +165,7 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
             $portfolioDividends[] = new PortfolioDividendView(
                 id: $dividend['id'],
                 stockTicker: $dividend['ticker'],
-                payoutDate: \DateTimeImmutable::createFromFormat('Y-m-d', $dividend['record_date']),
+                payoutDate: \DateTimeImmutable::createFromFormat('Y-m-d', $dividend['payout_date']),
                 amount: (int)$dividend['dividend_amount'],
                 amountCurrency: $dividend['dividend_currency'],
             );

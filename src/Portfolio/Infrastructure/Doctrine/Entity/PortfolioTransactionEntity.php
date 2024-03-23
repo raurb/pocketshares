@@ -38,18 +38,18 @@ class PortfolioTransactionEntity extends BaseEntity
     private TransactionType $transactionType;
 
     public function __construct(
-        PortfolioEntity $portfolio,
+        PortfolioEntity        $portfolio,
         PortfolioHoldingEntity $portfolioHolding,
-        NumberOfShares $numberOfShares,
-        Money $value,
-        \DateTimeImmutable $transactionDate,
-        TransactionType $transactionType,
+        NumberOfShares         $numberOfShares,
+        Money                  $pricePerShare,
+        \DateTimeImmutable     $transactionDate,
+        TransactionType        $transactionType,
     ) {
         $this->portfolio = $portfolio;
         $this->portfolioHolding = $portfolioHolding;
         $this->stockTicker = $portfolioHolding->getStock()->getTicker();
         $this->numberOfShares = $numberOfShares;
-        $this->pricePerShare = $value;
+        $this->pricePerShare = $pricePerShare;
         $this->transactionDate = $transactionDate;
         $this->transactionType = $transactionType;
     }
