@@ -83,6 +83,7 @@ class PortfolioEntity extends BaseEntity
 
     public function getHoldingByTicker(string $ticker): ?PortfolioHoldingEntity
     {
+        $ticker = \strtoupper($ticker);
         /** @var PortfolioHoldingEntity $possessedHolding */
         foreach ($this->holdings as $possessedHolding) {
             if ($possessedHolding->getStock()->getTicker() === $ticker) {
