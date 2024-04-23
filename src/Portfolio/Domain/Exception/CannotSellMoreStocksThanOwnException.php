@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PocketShares\Portfolio\Domain\Exception;
 
-class CannotSellMoreStocksThanOwn extends \RuntimeException
+class CannotSellMoreStocksThanOwnException extends \RuntimeException
 {
     public function __construct(string $stockTicker, float $sharesOwn, float $sellAmount)
     {

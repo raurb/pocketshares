@@ -6,9 +6,11 @@ namespace PocketShares\Portfolio\Domain;
 
 use Money\Currency;
 use Money\Money;
+use PocketShares\Portfolio\Domain\Exception\BuySellTransactionNoNumberOfSharesException;
+use PocketShares\Portfolio\Domain\Exception\CannotRegisterDividendNoHolding;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterMoreThanOneTransaction;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterTransactionNoHolding;
-use PocketShares\Portfolio\Domain\Exception\CannotSellMoreStocksThanOwn;
+use PocketShares\Portfolio\Domain\Exception\CannotSellMoreStocksThanOwnException;
 use PocketShares\Shared\Domain\AggregateRoot;
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Utilities\MoneyFactory;
@@ -17,10 +19,6 @@ use PocketShares\Stock\Domain\Stock;
 
 class Portfolio extends AggregateRoot
 {
-    /**
-     * @todo zastanowic sie czy przerobic to na tablice nowych transakcji
-     * tutaj pojawi sie problem kolejnosci transakcji
-     * */
     private ?Transaction $newTransaction = null;
 
     /** @var DividendPayment[] */
@@ -107,10 +105,12 @@ class Portfolio extends AggregateRoot
 
     public function registerDividendPayment(DividendPayment $dividendPayment): void
     {
-        //@todo zwieksz wartosc
-        if ($this->searchForHolding($dividendPayment->stock)) {
-            $this->newDividends[] = $dividendPayment;
+        if (!$this->searchForHolding($dividendPayment->stock)) {
+            throw new CannotRegisterDividendNoHolding($dividendPayment->stock->ticker);
         }
+
+        //@todo zwieksz wartosc
+        $this->newDividends[] = $dividendPayment;
     }
 
     private function validateTransaction(Transaction $transaction): void
@@ -131,7 +131,7 @@ class Portfolio extends AggregateRoot
         }
 
         if ($transaction->numberOfShares->getNumberOfShares() > $holding->getNumberOfShares()->getNumberOfShares()) {
-            throw new CannotSellMoreStocksThanOwn(
+            throw new CannotSellMoreStocksThanOwnException(
                 $transaction->stock->ticker,
                 $holding->getNumberOfShares()->getNumberOfShares(),
                 $transaction->numberOfShares->getNumberOfShares()

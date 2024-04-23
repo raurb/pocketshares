@@ -7,7 +7,7 @@ namespace PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\S
 use Doctrine\ORM\EntityManagerInterface;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterTransactionNoHolding;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterTransactionNoStock;
-use PocketShares\Portfolio\Domain\Exception\CannotSellMoreStocksThanOwn;
+use PocketShares\Portfolio\Domain\Exception\CannotSellMoreStocksThanOwnException;
 use PocketShares\Portfolio\Domain\Transaction;
 use PocketShares\Portfolio\Domain\TransactionType;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
@@ -45,7 +45,7 @@ class SellTransaction implements RegisterTransactionStrategyInterface
         }
 
         if ($newTransaction->numberOfShares->getNumberOfShares() > $holding->getNumberOfShares()->getNumberOfShares()) {
-            throw new CannotSellMoreStocksThanOwn(
+            throw new CannotSellMoreStocksThanOwnException(
                 $newTransaction->stock->ticker,
                 $holding->getNumberOfShares()->getNumberOfShares(),
                 $newTransaction->numberOfShares->getNumberOfShares()
