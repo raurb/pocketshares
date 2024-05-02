@@ -21,7 +21,7 @@ abstract class AbstractTransactionProcessor
         $stockRepository = $this->entityManager->getRepository(StockEntity::class);
 
         /** @var StockEntity|null $stockEntity */
-        $stockEntity = $stockRepository->findOneByTicker($ticker);
+        $stockEntity = $stockRepository->findOneBy(['ticker' => $ticker]);
 
         if (!$stockEntity) {
             throw new CannotRegisterTransactionNoStock($ticker);

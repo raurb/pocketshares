@@ -32,7 +32,7 @@ class SellTransaction implements RegisterTransactionStrategyInterface
         $stockRepository = $this->entityManager->getRepository(StockEntity::class);
 
         /** @var StockEntity|null $stockEntity */
-        $stockEntity = $stockRepository->findOneByTicker($newTransaction->stock->ticker);
+        $stockEntity = $stockRepository->findOneBy(['ticker' => $newTransaction->stock->ticker]);
 
         if (!$stockEntity) {
             throw new CannotRegisterTransactionNoStock($newTransaction->stock->ticker);
