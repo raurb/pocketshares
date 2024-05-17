@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PocketShares\Test\Infrastructure\Symfony\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Money\Currency;
+use PocketShares\ExchangeRates\Provider\Nbp\Nbp;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use PocketShares\Shared\Utilities\MoneyFactory;
 use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
@@ -16,15 +18,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class TestController extends ApiController
 {
     #[Route('/', name: 'test')]
-    public function test(EntityManagerInterface $entityManager): Response
+    public function test(Nbp $nbp): Response
     {
-        $newDividendPayment = new DividendPaymentEntity(
-            $entityManager->getReference(StockEntity::class, 33),
-            new \DateTimeImmutable(),
-            MoneyFactory::create(870, 'USD'),
-        );
-        $entityManager->persist($newDividendPayment);
-        $entityManager->flush($newDividendPayment);
+        $rates = $nbp->getMidExchangeRatesForCurrency(new Currency('USD'), new \DateTimeImmutable('2024-05-15'), new \DateTimeImmutable('2024-05-16'));
         return new Response();
     }
 }

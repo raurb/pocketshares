@@ -16,18 +16,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    _instanceof:
-        PocketShares\Shared\Application\Command\CommandHandlerInterface:
-            tags:
-                - { name: messenger.message_handler, bus: messenger.bus.command }
-
-        PocketShares\Shared\Application\Query\QueryHandlerInterface:
-            public: true
-            tags:
-                - { name: messenger.message_handler, bus: messenger.bus.query }
-
-        PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\Strategy\RegisterTransactionStrategyInterface:
-            tags: [ 'portfolio.transaction.strategy']
+    GuzzleHttp\Client:
+        class: GuzzleHttp\Client
 
     PocketShares\Shared\Infrastructure\Bus\MessengerCommandBus:
         arguments:
@@ -41,3 +31,20 @@ services:
         autowire: false
         arguments:
             - !tagged_iterator portfolio.transaction.strategy
+
+    PocketShares\ExchangeRates\Provider\Nbp\Api\ApiClient:
+        arguments:
+            $client: '@GuzzleHttp\Client'
+
+    _instanceof:
+        PocketShares\Shared\Application\Command\CommandHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: messenger.bus.command }
+
+        PocketShares\Shared\Application\Query\QueryHandlerInterface:
+            public: true
+            tags:
+                - { name: messenger.message_handler, bus: messenger.bus.query }
+
+        PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\Strategy\RegisterTransactionStrategyInterface:
+            tags: [ 'portfolio.transaction.strategy' ]
