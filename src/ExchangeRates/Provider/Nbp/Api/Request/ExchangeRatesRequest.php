@@ -4,16 +4,25 @@ declare(strict_types=1);
 
 namespace PocketShares\ExchangeRates\Provider\Nbp\Api\Request;
 
-use Money\Currency;
+use PocketShares\ExchangeRates\Provider\Nbp\Exception\MaxDayIntervalExceeded;
 
 readonly class ExchangeRatesRequest implements RequestInterface
 {
+    private const MAX_DAY_INTERVAL = 93;
+
     public function __construct(
         public string $currency,
         public ?\DateTimeImmutable $startDate,
         public ?\DateTimeImmutable $endDate,
     )
     {
+        if ($this->startDate && $this->endDate) {
+            $interval = $this->startDate->diff($this->endDate);
+
+            if ($interval->days > self::MAX_DAY_INTERVAL) {
+                throw new MaxDayIntervalExceeded(self::MAX_DAY_INTERVAL);
+            }
+        }
     }
 
     public function getPath(): string
