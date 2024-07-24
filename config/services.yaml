@@ -32,7 +32,7 @@ services:
         arguments:
             - !tagged_iterator portfolio.transaction.strategy
 
-    PocketShares\ExchangeRates\Provider\Nbp\Api\ApiClient:
+    PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api\ApiClient:
         arguments:
             $client: '@GuzzleHttp\Client'
 

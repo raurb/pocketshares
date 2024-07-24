@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\ExchangeRates\Provider\Nbp\Exception;
+namespace PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Exception;
 
 class MaxDayIntervalExceeded extends \Exception
 {

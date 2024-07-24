@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\ExchangeRates\Provider\Nbp\Api;
+namespace PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api;
 
 use GuzzleHttp\ClientInterface;
-use PocketShares\ExchangeRates\Provider\Nbp\Api\Request\ExchangeRatesRequest;
-use PocketShares\ExchangeRates\Provider\Nbp\Api\Request\RequestInterface;
-use PocketShares\ExchangeRates\Provider\Nbp\Api\Response\ExchangeRatesResponse;
+use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api\Request\ExchangeRatesRequest;
+use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api\Request\RequestInterface;
+use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api\Response\ExchangeRatesResponse;
 
 class ApiClient
 {

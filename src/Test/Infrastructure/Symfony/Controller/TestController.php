@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace PocketShares\Test\Infrastructure\Symfony\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Money\Currency;
-use PocketShares\ExchangeRates\Provider\Nbp\Nbp;
+use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Nbp;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
-use PocketShares\Shared\Utilities\MoneyFactory;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 

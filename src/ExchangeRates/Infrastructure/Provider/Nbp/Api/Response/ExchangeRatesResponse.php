@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\ExchangeRates\Provider\Nbp\Api\Response;
+namespace PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api\Response;
 
 class ExchangeRatesResponse
 {

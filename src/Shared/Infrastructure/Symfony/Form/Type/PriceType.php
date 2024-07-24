@@ -22,7 +22,7 @@ class PriceType extends AbstractType
                     "step" => 0.01,
                 ],
                 'scale' => 2,
-                'label' => false,
+                'label' => 'Amount',
             ])
             ->add('currency', CurrencyType::class);
     }

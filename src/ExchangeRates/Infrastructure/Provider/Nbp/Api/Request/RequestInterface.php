@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\ExchangeRates\Provider\Nbp\Api\Request;
+namespace PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api\Request;
 
 interface RequestInterface
 {

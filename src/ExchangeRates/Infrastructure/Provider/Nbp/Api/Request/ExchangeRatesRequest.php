@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\ExchangeRates\Provider\Nbp\Api\Request;
+namespace PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Api\Request;
 
-use PocketShares\ExchangeRates\Provider\Nbp\Exception\MaxDayIntervalExceeded;
+use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Exception\MaxDayIntervalExceeded;
 
 readonly class ExchangeRatesRequest implements RequestInterface
 {

@@ -35,11 +35,17 @@ class RegisterSystemDividendHandler implements CommandHandlerInterface
             MoneyFactory::create($command->amount, $command->amountCurrency),
         );
 
+        /**
+         * @todo
+         * 0. Zrobic Agregat Systemowej dywidendy
+         * 1. Wyrzucic listenera do Portfolio, zeby zaktualizowal kazde
+         * 2. Pobrac kursy walut NBP
+         */
         $portfolios = $this->portfolioRepository->readManyByStockTicker($command->stockTicker);
 
         /** @var Portfolio $portfolio */
         foreach ($portfolios as $portfolio) {
-            //@todo wyrzucic na asynchroniczna kolejke
+            //@todo wyrzucic na asynchroniczna kolejke, albo jeszcze lepiej zrobic listener w przestrzeni Portfolio
             $portfolio->registerDividendPayment($dividendPayment);
             $this->portfolioRepository->store($portfolio);
         }
