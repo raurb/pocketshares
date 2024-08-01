@@ -49,6 +49,7 @@ class StockRepository implements StockRepositoryInterface
             name: $stockEntity->getName(),
             marketSymbol: $stockEntity->getMarketSymbol(),
             currency: $stockEntity->getCurrency(),
+            id: $stockEntity->getId(),
         );
     }
 }

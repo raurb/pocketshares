@@ -16,9 +16,9 @@ use PocketShares\Portfolio\Domain\Transaction;
 use PocketShares\Portfolio\Domain\TransactionType;
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Utilities\MoneyFactory;
-use PocketShares\Stock\Domain\DividendPayment;
 use PocketShares\Stock\Domain\MarketSymbol;
 use PocketShares\Stock\Domain\Stock;
+use PocketShares\System\Domain\SystemDividendPayment;
 
 class PortfolioTest extends TestCase
 {
@@ -128,7 +128,7 @@ class PortfolioTest extends TestCase
             new Holding($this->stockMock, new NumberOfShares(10)),
         ]);
 
-        $dividend = new DividendPayment($this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'));
+        $dividend = new SystemDividendPayment(0, $this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'));
 
         $portfolio->registerDividendPayment($dividend);
 
@@ -137,7 +137,7 @@ class PortfolioTest extends TestCase
 
     public function testRegisterDividendNoHolding(): void
     {
-        $dividend = new DividendPayment($this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'));
+        $dividend = new SystemDividendPayment(0, $this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'));
 
         $this->expectException(CannotRegisterDividendNoHolding::class);
 

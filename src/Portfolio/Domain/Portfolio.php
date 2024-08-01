@@ -6,7 +6,6 @@ namespace PocketShares\Portfolio\Domain;
 
 use Money\Currency;
 use Money\Money;
-use PocketShares\Portfolio\Domain\Exception\BuySellTransactionNoNumberOfSharesException;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterDividendNoHolding;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterMoreThanOneTransaction;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterTransactionNoHolding;
@@ -14,14 +13,14 @@ use PocketShares\Portfolio\Domain\Exception\CannotSellMoreStocksThanOwnException
 use PocketShares\Shared\Domain\AggregateRoot;
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Utilities\MoneyFactory;
-use PocketShares\Stock\Domain\DividendPayment;
 use PocketShares\Stock\Domain\Stock;
+use PocketShares\System\Domain\SystemDividendPayment;
 
 class Portfolio extends AggregateRoot
 {
     private ?Transaction $newTransaction = null;
 
-    /** @var DividendPayment[] */
+    /** @var SystemDividendPayment[] */
     private array $newDividends = [];
 
     public function __construct(
@@ -103,7 +102,7 @@ class Portfolio extends AggregateRoot
         return null;
     }
 
-    public function registerDividendPayment(DividendPayment $dividendPayment): void
+    public function registerDividendPayment(SystemDividendPayment $dividendPayment): void
     {
         if (!$this->searchForHolding($dividendPayment->stock)) {
             throw new CannotRegisterDividendNoHolding($dividendPayment->stock->ticker);

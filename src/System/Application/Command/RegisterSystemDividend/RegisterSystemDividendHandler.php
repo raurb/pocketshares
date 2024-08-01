@@ -4,19 +4,23 @@ declare(strict_types=1);
 
 namespace PocketShares\System\Application\Command\RegisterSystemDividend;
 
-use PocketShares\Portfolio\Domain\Portfolio;
-use PocketShares\Portfolio\Domain\Repository\PortfolioRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use PocketShares\Shared\Application\Command\CommandHandlerInterface;
 use PocketShares\Shared\Utilities\MoneyFactory;
-use PocketShares\Stock\Domain\DividendPayment;
 use PocketShares\Stock\Domain\Exception\StockTickerNotFoundException;
 use PocketShares\Stock\Domain\Repository\StockRepositoryInterface;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
+use PocketShares\System\Domain\Event\NewSystemDividendEvent;
+use PocketShares\System\Domain\SystemDividendPayment;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class RegisterSystemDividendHandler implements CommandHandlerInterface
 {
     public function __construct(
-        private readonly StockRepositoryInterface     $stockRepository,
-        private readonly PortfolioRepositoryInterface $portfolioRepository,
+        private readonly StockRepositoryInterface $stockRepository,
+        private readonly EntityManagerInterface   $entityManager,
+        private readonly EventDispatcherInterface $eventDispatcher,
     )
     {
     }
@@ -29,25 +33,21 @@ class RegisterSystemDividendHandler implements CommandHandlerInterface
             throw new StockTickerNotFoundException($command->stockTicker);
         }
 
-        $dividendPayment = new DividendPayment(
+        $dividendEntity = new SystemDividendPaymentEntity(
+            $this->entityManager->getReference(StockEntity::class, $stock->id),
+            $command->payoutDate,
+            MoneyFactory::create($command->amount, $command->amountCurrency),
+        );
+        $this->entityManager->persist($dividendEntity);
+        $this->entityManager->flush();
+
+        $systemDividendPayment = new SystemDividendPayment(
+            $dividendEntity->getId(),
             $stock,
             $command->payoutDate,
             MoneyFactory::create($command->amount, $command->amountCurrency),
         );
 
-        /**
-         * @todo
-         * 0. Zrobic Agregat Systemowej dywidendy
-         * 1. Wyrzucic listenera do Portfolio, zeby zaktualizowal kazde
-         * 2. Pobrac kursy walut NBP
-         */
-        $portfolios = $this->portfolioRepository->readManyByStockTicker($command->stockTicker);
-
-        /** @var Portfolio $portfolio */
-        foreach ($portfolios as $portfolio) {
-            //@todo wyrzucic na asynchroniczna kolejke, albo jeszcze lepiej zrobic listener w przestrzeni Portfolio
-            $portfolio->registerDividendPayment($dividendPayment);
-            $this->portfolioRepository->store($portfolio);
-        }
+        $this->eventDispatcher->dispatch(new NewSystemDividendEvent($systemDividendPayment));
     }
 }

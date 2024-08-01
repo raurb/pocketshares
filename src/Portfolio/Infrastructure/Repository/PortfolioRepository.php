@@ -12,9 +12,9 @@ use PocketShares\Portfolio\Domain\Transaction;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioHoldingEntity;
 use PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\TransactionRegistryProcessor;
-use PocketShares\Stock\Domain\DividendPayment;
 use PocketShares\Stock\Domain\Stock;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
+use PocketShares\System\Domain\SystemDividendPayment;
 
 class PortfolioRepository implements PortfolioRepositoryInterface
 {
@@ -130,14 +130,9 @@ class PortfolioRepository implements PortfolioRepositoryInterface
 
     private function registerNewDividendPayments(PortfolioEntity $portfolioEntity, array $registeredDividendPayments): PortfolioEntity
     {
-        /** @var DividendPayment $dividendPayment */
+        /** @var SystemDividendPayment $dividendPayment */
         foreach ($registeredDividendPayments as $dividendPayment) {
-            $newDividendPayment = new DividendPaymentEntity(
-                $portfolioEntity->getStockByTicker($dividendPayment->stock->ticker),
-                $dividendPayment->recordDate,
-                $dividendPayment->amount,
-            );
-            $portfolioEntity->addDividendPayment($newDividendPayment);
+            $portfolioEntity->addDividendPayment($this->entityManager->getReference(SystemDividendPaymentEntity::class, $dividendPayment->systemDividendId));
         }
 
         return $portfolioEntity;

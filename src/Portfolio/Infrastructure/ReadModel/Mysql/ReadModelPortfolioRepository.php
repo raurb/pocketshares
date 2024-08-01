@@ -143,14 +143,14 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
     public function getPortfolioDividends(int $portfolioId, ?\DateTimeImmutable $from = null, ?\DateTimeImmutable $to = null): array
     {
         $sql = "SELECT
-                dp.id,
+                sdp.id,
                 s.ticker,
-                dp.payout_date,
-                dp.amount ->> '$.amount' AS dividend_amount,
-                dp.amount ->> '$.currency' AS dividend_currency
-                FROM dividend_payment dp
-                LEFT JOIN stock s ON s.id = dp.stock_id
-                WHERE dp.id IN (SELECT dividend_id FROM portfolio_dividend_payment WHERE portfolio_id = :portfolioId);
+                sdp.payout_date,
+                sdp.amount ->> '$.amount' AS dividend_amount,
+                sdp.amount ->> '$.currency' AS dividend_currency
+                FROM system_dividend_payment sdp
+                LEFT JOIN stock s ON s.id = sdp.stock_id
+                WHERE sdp.id IN (SELECT dividend_id FROM portfolio_dividend_payment WHERE portfolio_id = :portfolioId);
                 ";
 
         $results = $this->executeRawQuery($sql, ['portfolioId' => $portfolioId])->fetchAllAssociative();

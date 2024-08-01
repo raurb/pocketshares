@@ -14,13 +14,13 @@ class ReadModelSystemDividendsRepository extends MysqlRepository implements Syst
     public function getAllSystemDividends(?int $limit = null, ?int $offset = null): array
     {
         $sql = "SELECT
-                dp.id,
+                sdp.id,
                 s.ticker,
-                dp.payout_date,
-                dp.amount ->> '$.amount'  AS dividend_amount,
-                dp.amount ->> '$.currency' AS dividend_currency
-                FROM dividend_payment dp
-                LEFT JOIN stock s ON s.id = dp.stock_id;
+                sdp.payout_date,
+                sdp.amount ->> '$.amount'  AS dividend_amount,
+                sdp.amount ->> '$.currency' AS dividend_currency
+                FROM system_dividend_payment sdp
+                LEFT JOIN stock s ON s.id = sdp.stock_id;
                 ";
 
         $results = $this->executeRawQuery($sql)->fetchAllAssociative();

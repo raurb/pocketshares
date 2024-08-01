@@ -19,7 +19,7 @@ use Money\Currency;
 use Money\Money;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Repository\PortfolioEntityRepository;
 use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 
 #[Entity(repositoryClass: PortfolioEntityRepository::class)]
@@ -43,7 +43,7 @@ class PortfolioEntity extends BaseEntity
     #[JoinTable(name: 'portfolio_dividend_payment')]
     #[JoinColumn(name: 'portfolio_id', referencedColumnName: 'id')]
     #[InverseJoinColumn(name: 'dividend_id', referencedColumnName: 'id')]
-    #[ManyToMany(targetEntity: DividendPaymentEntity::class, cascade: ['persist', 'remove'])]
+    #[ManyToMany(targetEntity: SystemDividendPaymentEntity::class)]
     private Collection $dividendPayments;
 
     public function __construct(string $name, string $currency)
@@ -94,12 +94,7 @@ class PortfolioEntity extends BaseEntity
         return null;
     }
 
-    public function getStockByTicker(string $ticker): ?StockEntity
-    {
-        return $this->getHoldingByTicker($ticker)?->getStock();
-    }
-
-    public function addDividendPayment(DividendPaymentEntity $dividendPaymentEntity): void
+    public function addDividendPayment(SystemDividendPaymentEntity $dividendPaymentEntity): void
     {
         if ($this->dividendPayments->contains($dividendPaymentEntity)) {
             return;

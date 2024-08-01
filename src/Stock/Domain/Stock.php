@@ -16,6 +16,7 @@ class Stock extends AggregateRoot
         public readonly string $name,
         public readonly MarketSymbol $marketSymbol,
         public readonly Currency $currency,
+        public readonly ?int $id = null,
     ) {}
 
     public static function create(string $ticker, string $name, MarketSymbol $marketSymbol, Currency $currency): self

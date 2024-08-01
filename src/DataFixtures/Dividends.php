@@ -9,7 +9,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 use PocketShares\Shared\Utilities\MoneyFactory;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\DividendPaymentEntity;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
 
 class Dividends extends Fixture implements DependentFixtureInterface
@@ -32,7 +32,7 @@ class Dividends extends Fixture implements DependentFixtureInterface
             /** @var StockEntity $stock */
             $stockEntity = $this->getReference(\sprintf('stock_%s', \strtolower($dividend['ticker'])), StockEntity::class);
 
-            $dividendEntity = new DividendPaymentEntity($stockEntity, $dividend['payoutDate'], MoneyFactory::create($dividend['amount'], $dividend['currency']));
+            $dividendEntity = new SystemDividendPaymentEntity($stockEntity, $dividend['payoutDate'], MoneyFactory::create($dividend['amount'], $dividend['currency']));
             $portfolioEntity->addDividendPayment($dividendEntity);
             $manager->persist($portfolioEntity);
         }

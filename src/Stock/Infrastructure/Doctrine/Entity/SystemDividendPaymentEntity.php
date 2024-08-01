@@ -7,11 +7,11 @@ namespace PocketShares\Stock\Infrastructure\Doctrine\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Repository\DividendPaymentEntityRepository;
+use PocketShares\Stock\Infrastructure\Doctrine\Repository\SystemDividendPaymentEntityRepository;
 
-#[ORM\Entity(repositoryClass: DividendPaymentEntityRepository::class)]
-#[ORM\Table(name: "dividend_payment")]
-class DividendPaymentEntity extends BaseEntity
+#[ORM\Entity(repositoryClass: SystemDividendPaymentEntityRepository::class)]
+#[ORM\Table(name: "system_dividend_payment")]
+class SystemDividendPaymentEntity extends BaseEntity
 {
     #[Orm\ManyToOne(targetEntity: StockEntity::class)]
     #[Orm\JoinColumn(name: 'stock_id', referencedColumnName: 'id')]
