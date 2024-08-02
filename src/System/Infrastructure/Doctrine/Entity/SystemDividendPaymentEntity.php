@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PocketShares\Stock\Infrastructure\Doctrine\Entity;
+namespace PocketShares\System\Infrastructure\Doctrine\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Repository\SystemDividendPaymentEntityRepository;
+use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
+use PocketShares\System\Infrastructure\Doctrine\Repository\SystemDividendPaymentEntityRepository;
 
 #[ORM\Entity(repositoryClass: SystemDividendPaymentEntityRepository::class)]
 #[ORM\Table(name: "system_dividend_payment")]

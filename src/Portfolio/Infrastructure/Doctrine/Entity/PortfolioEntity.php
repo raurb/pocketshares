@@ -19,8 +19,7 @@ use Money\Currency;
 use Money\Money;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Repository\PortfolioEntityRepository;
 use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
+use PocketShares\System\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 
 #[Entity(repositoryClass: PortfolioEntityRepository::class)]
 #[Table(name: "portfolio")]

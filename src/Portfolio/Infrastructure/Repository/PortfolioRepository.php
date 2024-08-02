@@ -13,8 +13,8 @@ use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioHoldingEntity;
 use PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\TransactionRegistryProcessor;
 use PocketShares\Stock\Domain\Stock;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 use PocketShares\System\Domain\SystemDividendPayment;
+use PocketShares\System\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 
 class PortfolioRepository implements PortfolioRepositoryInterface
 {

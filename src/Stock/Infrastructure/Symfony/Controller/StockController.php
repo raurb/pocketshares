@@ -7,7 +7,6 @@ namespace PocketShares\Stock\Infrastructure\Symfony\Controller;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
 use PocketShares\Stock\Application\Command\CreateStock\CreateStockCommand;
 use PocketShares\Stock\Application\Query\GetAllStocks\GetAllStocksQuery;
-use PocketShares\System\Application\Query\GetAllSystemDividends\GetAllSystemDividendsQuery;
 use PocketShares\Stock\Infrastructure\Symfony\Form\Type\AddStockType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,10 +31,14 @@ class StockController extends ApiController
             );
 
             $this->commandBus->dispatch($command);
+
+            return $this->render('stock/_stock_list.html.twig', [
+                'stocks' => $this->queryBus->dispatch(new GetAllStocksQuery()),
+            ]);
         }
 
-        return $this->render('stock/_stock_list.html.twig', [
-            'stocks' => $this->queryBus->dispatch(new GetAllStocksQuery()),
+        return $this->render('stock/_stock_add.html.twig', [
+            'form' => $form,
         ]);
     }
 

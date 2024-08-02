@@ -10,9 +10,9 @@ use PocketShares\Shared\Utilities\MoneyFactory;
 use PocketShares\Stock\Domain\Exception\StockTickerNotFoundException;
 use PocketShares\Stock\Domain\Repository\StockRepositoryInterface;
 use PocketShares\Stock\Infrastructure\Doctrine\Entity\StockEntity;
-use PocketShares\Stock\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 use PocketShares\System\Domain\Event\NewSystemDividendEvent;
 use PocketShares\System\Domain\SystemDividendPayment;
+use PocketShares\System\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class RegisterSystemDividendHandler implements CommandHandlerInterface
