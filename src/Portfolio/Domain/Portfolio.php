@@ -15,6 +15,7 @@ use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Utilities\MoneyFactory;
 use PocketShares\Stock\Domain\Stock;
 use PocketShares\System\Domain\SystemDividendPayment;
+use PocketShares\Tax\Domain\DividendTax;
 
 class Portfolio extends AggregateRoot
 {
@@ -22,6 +23,9 @@ class Portfolio extends AggregateRoot
 
     /** @var SystemDividendPayment[] */
     private array $newDividends = [];
+
+    /** @var DividendTax[] */
+    private array $newDividendTaxes = [];
 
     public function __construct(
         private readonly string $name,
@@ -91,6 +95,11 @@ class Portfolio extends AggregateRoot
         return $this->newDividends;
     }
 
+    public function getNewDividendTaxes(): array
+    {
+        return $this->newDividendTaxes;
+    }
+
     public function searchForHolding(Stock $stock): ?Holding
     {
         foreach ($this->holdings as $holding) {
@@ -110,6 +119,9 @@ class Portfolio extends AggregateRoot
 
         //@todo zwieksz wartosc
         $this->newDividends[] = $dividendPayment;
+
+        //@todo obliczyc podatek
+
     }
 
     private function validateTransaction(Transaction $transaction): void
