@@ -37,6 +37,7 @@
 
         {% if portfolio.hasDividends %}
             <p><a href="{{ path('portfolio_dividends', {id: portfolio.id}) }}">Show dividends</a></p>
+            <p><a href="{{ path('portfolio_dividend_income_tax', {id: portfolio.id}) }}">Show dividend income taxes</a></p>
         {% endif %}
 
     {% endblock %}

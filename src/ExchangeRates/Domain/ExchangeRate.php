@@ -6,13 +6,15 @@ namespace PocketShares\ExchangeRates\Domain;
 
 use Money\Currency;
 
-class ExchangeRate
+readonly class ExchangeRate
 {
     public function __construct(
-        public readonly Currency $fromCurrency,
-        public readonly Currency $toCurrency,
-        public readonly \DateTimeImmutable $date,
-        public readonly float $value
-    ) {
+        public Currency           $currencyFrom,
+        public Currency           $currencyTo,
+        public \DateTimeImmutable $date,
+        public float              $rate,
+        public ?int $id = null,
+    )
+    {
     }
 }

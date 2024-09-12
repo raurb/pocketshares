@@ -128,7 +128,7 @@ class PortfolioTest extends TestCase
             new Holding($this->stockMock, new NumberOfShares(10)),
         ]);
 
-        $dividend = new SystemDividendPayment(0, $this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'));
+        $dividend = new SystemDividendPayment($this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'), 0);
 
         $portfolio->registerDividendPayment($dividend);
 
@@ -137,7 +137,7 @@ class PortfolioTest extends TestCase
 
     public function testRegisterDividendNoHolding(): void
     {
-        $dividend = new SystemDividendPayment(0, $this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'));
+        $dividend = new SystemDividendPayment($this->stockMock, new \DateTimeImmutable(), MoneyFactory::create(5, 'USD'), 0);
 
         $this->expectException(CannotRegisterDividendNoHolding::class);
 

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h1>Portfolio dividend income taxes</h1>
+    {% block page_contents %}
+
+        <p><a href="{{ path('portfolio_details', {id: portfolioId}) }}">Back to portfolio details</a></p>
+
+        <table class="table table-hover">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Number</th>
+            <th scope="col">Dividend payout date</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Dividend amount</th>
+            <th scope="col">Currency</th>
+            <th scope="col">Withholding tax</th>
+            <th scope="col">Withholding tax rate</th>
+            <th scope="col">Exchange rate date</th>
+            <th scope="col">Exchange rate</th>
+            <th scope="col">Dividend amount in target currency</th>
+            <th scope="col">Dividend withholding tax in target currency</th>
+            <th scope="col">Tax to pay in target currency</th>
+            <th scope="col">Tax left to pay in target currency</th>
+            <th scope="col">Dividend amount in target currency net</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key, tax in taxes %}
+                <tr>
+                    <th scope="row">{{ key+1 }}</th>
+                    <th scope="col">{{ tax.dividendPayoutDate|date('Y-m-d') }}</th>
+                    <th scope="col">{{ tax.stockTicker }}</th>
+                    <th scope="col">{{ tax.dividendAmount / 100}}</th>
+                    <th scope="col">{{ tax.dividendCurrency }}</th>
+                    <th scope="col">{{ tax.withholdingTax / 100 }}</th>
+                    <th scope="col">{{ tax.withholdingTaxRate }}</th>
+                    <th scope="col">{{ tax.exchangeRateDate|date('Y-m-d') }}</th>
+                    <th scope="col">{{ tax.exchangeRate }}</th>
+                    <th scope="col">{{ tax.dividendAmountInTargetCurrency / 100 }}</th>
+                    <th scope="col">{{ tax.dividendWithholdingTaxInTargetCurrency / 100 }}</th>
+                    <th scope="col">{{ tax.taxToPayInTargetCurrency / 100 }}</th>
+                    <th scope="col">{{ tax.taxLeftToPayInTargetCurrency / 100 }}</th>
+                    <th scope="col">{{ tax.dividendNetAmountInTargetCurrency / 100 }}</th>
+                </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+
+    {% endblock %}
+{% endblock %}

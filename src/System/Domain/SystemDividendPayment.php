@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace PocketShares\System\Domain;
 
 use Money\Money;
+use PocketShares\Shared\Domain\AggregateRoot;
 use PocketShares\Stock\Domain\Stock;
 
-readonly class SystemDividendPayment
+class SystemDividendPayment extends AggregateRoot
 {
-    public function __construct(public int                $systemDividendId,
-                                public Stock              $stock,
-                                public \DateTimeImmutable $recordDate,
-                                public Money              $amount,
-    ) {
+    public function __construct(
+        public readonly Stock              $stock,
+        public readonly \DateTimeImmutable $recordDate,
+        public readonly Money              $amount,
+        public readonly ?int               $systemDividendId = null,
+    )
+    {
     }
 }

@@ -23,11 +23,11 @@ class MoneyFactory
 
     public static function fromJson(string $json): Money
     {
-        $decoded = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
+        $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         if (!isset($decoded['amount'], $decoded['currency'])) {
             throw new \RuntimeException(\sprintf('Cannot transform json "%s" into Money object.', $json));
         }
 
-        return new Money((string)$decoded['amount'], $decoded['currency']);
+        return new Money((string)$decoded['amount'], new Currency($decoded['currency']));
     }
 }

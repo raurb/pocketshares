@@ -42,10 +42,10 @@ class RegisterSystemDividendHandler implements CommandHandlerInterface
         $this->entityManager->flush();
 
         $systemDividendPayment = new SystemDividendPayment(
-            $dividendEntity->getId(),
             $stock,
             $command->payoutDate,
             MoneyFactory::create($command->amount, $command->amountCurrency),
+            $dividendEntity->getId(),
         );
 
         $this->eventDispatcher->dispatch(new NewSystemDividendEvent($systemDividendPayment));

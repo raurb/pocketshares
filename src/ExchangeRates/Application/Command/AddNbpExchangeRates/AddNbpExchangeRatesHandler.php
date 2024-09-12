@@ -9,7 +9,6 @@ use PocketShares\ExchangeRates\Domain\ExchangeRate;
 use PocketShares\ExchangeRates\Infrastructure\Doctrine\Entity\ExchangeRateEntity;
 use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Nbp;
 use PocketShares\Shared\Application\Command\CommandHandlerInterface;
-use PocketShares\Shared\Utilities\MoneyFactory;
 
 class AddNbpExchangeRatesHandler implements CommandHandlerInterface
 {
@@ -27,14 +26,7 @@ class AddNbpExchangeRatesHandler implements CommandHandlerInterface
 
         /** @var ExchangeRate $rate */
         foreach ($rates as $rate) {
-            $precision = \explode('.',(string)$rate->value);
-            if (isset($precision[1])) {
-                $count = \strlen($precision[1]);
-                $rateInt = (int)($rate->value * (10 ** $count));
-            } else {
-                $rateInt = (int) $rate->value;
-            }
-            $this->entityManager->persist(new ExchangeRateEntity($rate->fromCurrency, $rate->toCurrency, $rate->date, MoneyFactory::create($rateInt, 'PLN')));
+            $this->entityManager->persist(new ExchangeRateEntity($rate->currencyFrom, $rate->currencyTo, $rate->date, $rate->rate));
         }
 
         $this->entityManager->flush();

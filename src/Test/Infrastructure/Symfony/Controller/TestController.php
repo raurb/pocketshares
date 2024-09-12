@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace PocketShares\Test\Infrastructure\Symfony\Controller;
 
 use Money\Currency;
+use Money\Money;
 use PocketShares\ExchangeRates\Application\Command\AddNbpExchangeRates\AddNbpExchangeRatesCommand;
 use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Nbp;
+use PocketShares\Portfolio\Domain\Event\PortfolioDividendRegisteredEvent;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
+use PocketShares\Shared\Utilities\MoneyParser;
+use PocketShares\Shared\Utilities\MoneyFactory;
+use PocketShares\Tax\Application\Query\GetPortfolioDividendIncomeTaxes\GetPortfolioDividendIncomeTaxesQuery;
+use PocketShares\Tax\Domain\DividendTax;
+use PocketShares\Tax\Domain\EventListener\PortfolioDividendTaxCalculator;
+use PocketShares\Tax\Domain\Tax;
+use PocketShares\Tax\Infrastructure\ReadModel\Mysql\TaxReadModelRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,26 +25,32 @@ use Symfony\Component\Routing\Attribute\Route;
 class TestController extends ApiController
 {
     #[Route('/', name: 'test')]
-    public function test(Nbp $nbp): Response
+    public function test(PortfolioDividendTaxCalculator $calculator): Response
     {
 
-//        $dateFrom = new \DateTimeImmutable('2020-01-01');
-//        $dateTo = (clone $dateFrom)->modify('+ 93 days');
-//        $endDate = (new \DateTimeImmutable())->modify('-1 days');
-//
-//        while ($dateFrom < $endDate) {
-//
-//            if ($dateTo > $endDate) {
-//                $this->commandBus->dispatch(new AddNbpExchangeRatesCommand(new Currency('USD'), $dateFrom, $endDate));
-//                exit;
-//            }
-//
-//            $this->commandBus->dispatch(new AddNbpExchangeRatesCommand(new Currency('USD'), $dateFrom, $dateTo));
-//
-//            $dateFrom = $dateTo->modify('+1 days');
-//            $dateTo = (clone $dateFrom)->modify('+ 93 days');
-//        }
+//        $calculator->calculate(new PortfolioDividendRegisteredEvent(1, 2));
+//            $this->queryBus->dispatch(new GetPortfolioDividendIncomeTaxesQuery(1));
+//        $this->fetchNbp();
+        return new JsonResponse([]);
+    }
 
-        return new Response();
+    private function fetchNbp(): void
+    {
+        $dateFrom = new \DateTimeImmutable('2020-01-01');
+        $dateTo = (clone $dateFrom)->modify('+ 93 days');
+        $endDate = (new \DateTimeImmutable())->modify('-1 days');
+
+        while ($dateFrom < $endDate) {
+
+            if ($dateTo > $endDate) {
+                $this->commandBus->dispatch(new AddNbpExchangeRatesCommand(new Currency('USD'), $dateFrom, $endDate));
+                exit;
+            }
+
+            $this->commandBus->dispatch(new AddNbpExchangeRatesCommand(new Currency('USD'), $dateFrom, $dateTo));
+
+            $dateFrom = $dateTo->modify('+1 days');
+            $dateTo = (clone $dateFrom)->modify('+ 93 days');
+        }
     }
 }

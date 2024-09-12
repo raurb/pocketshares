@@ -35,6 +35,9 @@ class Stocks extends Fixture
         'SWK' => ['name' => 'Stanley Black & Decker', 'market' => MarketSymbol::NYSE, 'currency' => 'USD'],
         'V' => ['name' => 'Visa', 'market' => MarketSymbol::NYSE, 'currency' => 'USD'],
         'XOM' => ['name' => 'ExxonMobil', 'market' => MarketSymbol::NYSE, 'currency' => 'USD'],
+        'NVDY' => ['name' => 'YieldMax NVDA Option Income Strategy ETF', 'market' => MarketSymbol::NYSE, 'currency' => 'USD'],
+        'QCOM' => ['name' => 'Qualcomm', 'market' => MarketSymbol::NASDAQ, 'currency' => 'USD'],
+        'MO' => ['name' => 'Altria Group', 'market' => MarketSymbol::NASDAQ, 'currency' => 'USD'],
     ];
 
     public function load(ObjectManager $manager): void

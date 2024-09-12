@@ -8,12 +8,12 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Money\Currency;
-use Money\Money;
 use PocketShares\ExchangeRates\Infrastructure\Doctrine\Repository\ExchangeRateEntityRepository;
 use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
 
 /**
  * @todo pozniej sprawdzic cache
+ * @todo dorobic stawki withholding_tax
  * @see https://www.doctrine-project.org/projects/doctrine-orm/en/2.17/reference/second-level-cache.html
  */
 #[Entity(repositoryClass: ExchangeRateEntityRepository::class)]
@@ -21,33 +21,33 @@ use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
 class ExchangeRateEntity extends BaseEntity
 {
     #[Column(type: 'currency_type', length: 3)]
-    private Currency $fromCurrency;
+    private Currency $currencyFrom;
 
     #[Column(type: 'currency_type', length: 3)]
-    private Currency $toCurrency;
+    private Currency $currencyTo;
 
     #[Column(name: 'date', type: 'date_immutable')]
     private \DateTimeImmutable $date;
 
-    #[Column(type: 'money_type')]
-    private Money $rate;
+    #[Column(type: 'decimal', precision: 9, scale: 5)]
+    private float $rate;
 
-    public function __construct(Currency $fromCurrency, Currency $toCurrency, \DateTimeImmutable $date, Money $rate)
+    public function __construct(Currency $fromCurrency, Currency $toCurrency, \DateTimeImmutable $date, float $rate)
     {
-        $this->fromCurrency = $fromCurrency;
-        $this->toCurrency = $toCurrency;
+        $this->currencyFrom = $fromCurrency;
+        $this->currencyTo = $toCurrency;
         $this->date = $date;
         $this->rate = $rate;
     }
 
-    public function getFromCurrency(): Currency
+    public function getCurrencyFrom(): Currency
     {
-        return $this->fromCurrency;
+        return $this->currencyFrom;
     }
 
-    public function getToCurrency(): Currency
+    public function getCurrencyTo(): Currency
     {
-        return $this->toCurrency;
+        return $this->currencyTo;
     }
 
     public function getDate(): \DateTimeImmutable
@@ -55,7 +55,7 @@ class ExchangeRateEntity extends BaseEntity
         return $this->date;
     }
 
-    public function getRate(): Money
+    public function getRate(): float
     {
         return $this->rate;
     }

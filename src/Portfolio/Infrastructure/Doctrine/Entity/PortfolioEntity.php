@@ -7,13 +7,6 @@ namespace PocketShares\Portfolio\Infrastructure\Doctrine\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\InverseJoinColumn;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\JoinTable;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\Table;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Money\Currency;
 use Money\Money;
@@ -21,16 +14,16 @@ use PocketShares\Portfolio\Infrastructure\Doctrine\Repository\PortfolioEntityRep
 use PocketShares\Shared\Infrastructure\Doctrine\Entity\BaseEntity;
 use PocketShares\System\Infrastructure\Doctrine\Entity\SystemDividendPaymentEntity;
 
-#[Entity(repositoryClass: PortfolioEntityRepository::class)]
-#[Table(name: "portfolio")]
+#[ORM\Entity(repositoryClass: PortfolioEntityRepository::class)]
+#[ORM\Table(name: "portfolio")]
 class PortfolioEntity extends BaseEntity
 {
     use TimestampableEntity;
 
-    #[Column(type: 'string', length: 50)]
+    #[ORM\Column(type: 'string', length: 50)]
     private string $name;
 
-    #[Column(type: 'money_type')]
+    #[ORM\Column(type: 'money_type')]
     private Money $value;
 
     #[ORM\OneToMany(mappedBy: 'portfolio', targetEntity: PortfolioHoldingEntity::class, cascade: ['persist', 'remove'])]
@@ -39,10 +32,10 @@ class PortfolioEntity extends BaseEntity
     #[ORM\OneToMany(mappedBy: 'portfolio', targetEntity: PortfolioTransactionEntity::class, cascade: ['persist', 'remove'])]
     private Collection $transactions;
 
-    #[JoinTable(name: 'portfolio_dividend_payment')]
-    #[JoinColumn(name: 'portfolio_id', referencedColumnName: 'id')]
-    #[InverseJoinColumn(name: 'dividend_id', referencedColumnName: 'id')]
-    #[ManyToMany(targetEntity: SystemDividendPaymentEntity::class)]
+    #[ORM\JoinTable(name: 'portfolio_dividend_payment')]
+    #[ORM\JoinColumn(name: 'portfolio_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'dividend_id', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: SystemDividendPaymentEntity::class)]
     private Collection $dividendPayments;
 
     public function __construct(string $name, string $currency)

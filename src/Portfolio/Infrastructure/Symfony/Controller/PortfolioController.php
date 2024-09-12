@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PocketShares\Portfolio\Infrastructure\Symfony\Controller;
 
-use PocketShares\Portfolio\Application\Command\CreatePortfolio\CreatePortfolioCommand;
+use PocketShares\Portfolio\Application\Command\CreatePortfolio\CalculateTaxAfterDividendCommand;
 use PocketShares\Portfolio\Application\Command\RegisterTransaction\RegisterTransactionCommand;
 use PocketShares\Portfolio\Application\Query\GetAllPortfolios\GetAllPortfoliosQuery;
 use PocketShares\Portfolio\Application\Query\GetPortfolioHoldings\GetPortfolioDetailsQuery;
@@ -14,6 +14,7 @@ use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\CreatePortfolioType;
 use PocketShares\Portfolio\Infrastructure\Symfony\Form\Type\RegisterTransactionType;
 use PocketShares\Shared\Domain\NumberOfShares;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
+use PocketShares\Tax\Application\Query\GetPortfolioDividendIncomeTaxes\GetPortfolioDividendIncomeTaxesQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,7 +30,7 @@ class PortfolioController extends ApiController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            $command = new CreatePortfolioCommand(
+            $command = new CalculateTaxAfterDividendCommand(
                 name: $formData['name'],
                 currencyCode:$formData['currency_code'],
             );
@@ -108,6 +109,15 @@ class PortfolioController extends ApiController
         return $this->render('portfolio/_portfolio_dividend_list.html.twig', [
             'portfolioId' => $id,
             'dividends' => $this->queryBus->dispatch(new GetPortfolioDividendsQuery($id)) ?? [],
+        ]);
+    }
+
+    #[Route('/{id}/dividend-income-tax', name: 'dividend_income_tax', methods: ['GET'])]
+    public function portfolioDividendIncomeTaxes(int $id): Response
+    {
+        return $this->render('portfolio/_portfolio_dividend_income_tax_list.html.twig', [
+            'portfolioId' => $id,
+            'taxes' => $this->queryBus->dispatch(new GetPortfolioDividendIncomeTaxesQuery($id)) ?? [],
         ]);
     }
 }

@@ -6,6 +6,7 @@ namespace PocketShares\Portfolio\Domain;
 
 use Money\Currency;
 use Money\Money;
+use PocketShares\Portfolio\Domain\Event\PortfolioDividendRegisteredEvent;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterDividendNoHolding;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterMoreThanOneTransaction;
 use PocketShares\Portfolio\Domain\Exception\CannotRegisterTransactionNoHolding;
@@ -16,9 +17,13 @@ use PocketShares\Shared\Utilities\MoneyFactory;
 use PocketShares\Stock\Domain\Stock;
 use PocketShares\System\Domain\SystemDividendPayment;
 use PocketShares\Tax\Domain\DividendTax;
+use PocketShares\Tax\Domain\Tax;
 
 class Portfolio extends AggregateRoot
 {
+    private const WITHHOLDING_TAX_PERCENT = 0.15;
+    private const INCOME_TAX_PERCENT = 0.19;
+
     private ?Transaction $newTransaction = null;
 
     /** @var SystemDividendPayment[] */
@@ -41,6 +46,7 @@ class Portfolio extends AggregateRoot
         string $currencyCode,
     ): self
     {
+        //@todo zarejestrowac event domenowy
         return new self($name, MoneyFactory::create(0, $currencyCode), []);
     }
 
@@ -82,6 +88,7 @@ class Portfolio extends AggregateRoot
         }
 
         $holding->registerTransaction($transaction);
+        //@todo zamiast nowych transakcji dodav event domenowy
         $this->newTransaction = $transaction;
     }
 
@@ -113,15 +120,15 @@ class Portfolio extends AggregateRoot
 
     public function registerDividendPayment(SystemDividendPayment $dividendPayment): void
     {
-        if (!$this->searchForHolding($dividendPayment->stock)) {
+        $holding = $this->searchForHolding($dividendPayment->stock);
+        if (!$holding) {
             throw new CannotRegisterDividendNoHolding($dividendPayment->stock->ticker);
         }
 
         //@todo zwieksz wartosc
+
         $this->newDividends[] = $dividendPayment;
-
-        //@todo obliczyc podatek
-
+        $this->record(new PortfolioDividendRegisteredEvent($this->portfolioId, $dividendPayment->systemDividendId));
     }
 
     private function validateTransaction(Transaction $transaction): void
