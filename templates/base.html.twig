@@ -8,23 +8,52 @@
     <body>
     {% block body %}
 
-        <div class="container">
-            <div class="row">
-                <div class="col-2">
-                    <div id="sidebar">
-                        {% block sidebar %}
-                            <ul>
-                                <li><a href="/">Home</a></li>
-                                <li><a href="{{ path('stock_list') }}">Stocks</a></li>
-                                <li><a href="{{ path('portfolio_list') }}">Portfolios</a></li>
-                                <li><a href="{{ path('system_list') }}">System</a></li>
+        <div class="container-fluid">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="{{ path('portfolio_list') }}">
+                    <img src="{{ asset('assets/img/logo.png') }}" />
+                </a>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Portfolio
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li> <a class="nav-link" href="{{ path('portfolio_list') }}">Portfolio list</a></li>
+                                <li> <a class="nav-link" href="{{ path('portfolio_create') }}">Create portfolio</a></li>
                             </ul>
-                        {% endblock %}
-                    </div>
+                        </li>
+
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Stocks
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li> <a class="nav-link" href="{{ path('stock_list') }}">Stocks list</a></li>
+                                <li> <a class="nav-link" href="{{ path('stock_add') }}">Add stock</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                System
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('system_dividend_register_dividend') }}">Register dividend</a></li>
+                                <li><a class="dropdown-item" href="{{ path('system_dividend_list') }}">System dividends</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col">
-                    {% block content %}{% endblock %}
-                </div>
+            </nav>
+
+            <div class="col">
+                {% block content %}{% endblock %}
             </div>
         </div>
     {% endblock %}
