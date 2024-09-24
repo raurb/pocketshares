@@ -28,7 +28,7 @@ class DividendTax extends AggregateRoot
         public readonly float        $portfolioWithholdingTaxRate,
         public readonly float        $incomeTaxRate,
         public readonly ExchangeRate $exchangeRate,
-        public ?float                $stockWithholdingTaxRate,
+        public ?float                $stockWithholdingTaxRate = null,
     )
     {
         $this->withholdingTaxRate = $this->stockWithholdingTaxRate ?: $this->portfolioWithholdingTaxRate;
@@ -43,12 +43,19 @@ class DividendTax extends AggregateRoot
 
     private function calculateIncomeTaxAmount(): DividendIncomeTax
     {
-        $dividendAmountInTargetCurrencyGross = round(($this->dividendGrossAmount->getAmount() / 100) * $this->exchangeRate->rate, 2);
-        $dividendWithholdingTaxInTargetCurrency = round(($this->withholdingTaxAmount->getAmount() / 100) * $this->exchangeRate->rate, 2);
-        $taxToPayInTargetCurrency = round($dividendAmountInTargetCurrencyGross * $this->incomeTaxRate, 2);
+//        $dividendAmountInTargetCurrencyGross = round(($this->dividendGrossAmount->getAmount() / 100) * $this->exchangeRate->rate, 2);
+//        $dividendWithholdingTaxInTargetCurrency = round(($this->withholdingTaxAmount->getAmount() / 100) * $this->exchangeRate->rate, 2);
+//        $taxToPayInTargetCurrency = round($dividendAmountInTargetCurrencyGross * $this->incomeTaxRate, 2);
+//        $taxLeftToPayInTargetCurrency = $taxToPayInTargetCurrency - $dividendWithholdingTaxInTargetCurrency;
+//        $dividendAmountInTargetCurrencyNet = $dividendAmountInTargetCurrencyGross - $dividendWithholdingTaxInTargetCurrency - $taxLeftToPayInTargetCurrency;
+//        $incomeTaxRateTest = round(1 - ($dividendAmountInTargetCurrencyNet / $dividendAmountInTargetCurrencyGross), 2);
+
+        $dividendAmountInTargetCurrencyGross = \round($this->dividendGrossAmount->getAmount() * $this->exchangeRate->rate, 2);
+        $dividendWithholdingTaxInTargetCurrency = \round($this->withholdingTaxAmount->getAmount() * $this->exchangeRate->rate, 2);
+        $taxToPayInTargetCurrency = \round($dividendAmountInTargetCurrencyGross * $this->incomeTaxRate, 2);
         $taxLeftToPayInTargetCurrency = $taxToPayInTargetCurrency - $dividendWithholdingTaxInTargetCurrency;
         $dividendAmountInTargetCurrencyNet = $dividendAmountInTargetCurrencyGross - $dividendWithholdingTaxInTargetCurrency - $taxLeftToPayInTargetCurrency;
-        $incomeTaxRateTest = round(1 - ($dividendAmountInTargetCurrencyNet / $dividendAmountInTargetCurrencyGross), 2);
+        $incomeTaxRateTest = \round(1 - ($dividendAmountInTargetCurrencyNet / $dividendAmountInTargetCurrencyGross), 2);
 
         if ($incomeTaxRateTest !== $this->incomeTaxRate) {
             throw new IncomeTaxRateTestException(
@@ -65,13 +72,12 @@ class DividendTax extends AggregateRoot
             );
         }
 
-
         return new DividendIncomeTax(
-            dividendAmountInTargetCurrencyGross: MoneyFactory::create(MoneyParser::floatToInt($dividendAmountInTargetCurrencyGross), $this->incomeTaxCurrency->getCode()),
-            dividendWithholdingTaxInTargetCurrency: MoneyFactory::create(MoneyParser::floatToInt($dividendWithholdingTaxInTargetCurrency), $this->incomeTaxCurrency->getCode()),
-            taxToPayInTargetCurrency: MoneyFactory::create(MoneyParser::floatToInt($taxToPayInTargetCurrency), $this->incomeTaxCurrency->getCode()),
-            taxLeftToPayInTargetCurrency: MoneyFactory::create(MoneyParser::floatToInt($taxLeftToPayInTargetCurrency), $this->incomeTaxCurrency->getCode()),
-            dividendAmountInTargetCurrencyNet: MoneyFactory::create(MoneyParser::floatToInt($dividendAmountInTargetCurrencyNet), $this->incomeTaxCurrency->getCode()),
+            dividendAmountInTargetCurrencyGross: MoneyFactory::create((int)\round($dividendAmountInTargetCurrencyGross), $this->incomeTaxCurrency->getCode()),
+            dividendWithholdingTaxInTargetCurrency: MoneyFactory::create((int)\round($dividendWithholdingTaxInTargetCurrency) , $this->incomeTaxCurrency->getCode()),
+            taxToPayInTargetCurrency: MoneyFactory::create((int)\round($taxToPayInTargetCurrency), $this->incomeTaxCurrency->getCode()),
+            taxLeftToPayInTargetCurrency: MoneyFactory::create((int)\round($taxLeftToPayInTargetCurrency), $this->incomeTaxCurrency->getCode()),
+            dividendAmountInTargetCurrencyNet: MoneyFactory::create((int)\round($dividendAmountInTargetCurrencyNet), $this->incomeTaxCurrency->getCode()),
         );
     }
 }

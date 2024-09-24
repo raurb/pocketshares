@@ -5,6 +5,7 @@ namespace PocketShares\Tax\Infrastructure\ReadModel\Mysql;
 use Money\Currency;
 use PocketShares\ExchangeRates\Domain\ExchangeRate;
 use PocketShares\Shared\Domain\NumberOfShares;
+use PocketShares\Shared\Infrastructure\Doctrine\ReadModel\Mysql\OrderByDirection;
 use PocketShares\Shared\Infrastructure\Persistence\ReadModel\Repository\MysqlRepository;
 use PocketShares\Shared\Utilities\MoneyFactory;
 use PocketShares\Tax\Domain\Repository\TaxReadModelInterface;
@@ -52,7 +53,7 @@ class TaxReadModelRepository extends MysqlRepository implements TaxReadModelInte
         ])->fetchAssociative();
 
         if (!$exchangeRateData) {
-            throw new \RuntimeException('No exchange rate for given dividend ' . $dividendId);
+            throw new \RuntimeException(\sprintf('No exchange rate for given data payoutDate: %s, currencyFrom: %s, currencyTo: %s', $dividendData['payout_date'], $dividendAmount->getCurrency()->getCode(), $dividendData['income_tax_currency']));
         }
 
         return new DividendTaxDataView(
@@ -74,13 +75,24 @@ class TaxReadModelRepository extends MysqlRepository implements TaxReadModelInte
         );
     }
 
-    public function getPortfolioDividendIncomeTaxes(int $portfolioId): ?array
+    public function getPortfolioDividendIncomeTaxes(
+        int $portfolioId,
+        ?DividendIncomeTaxesOrderBy $orderBy = null,
+        ?OrderByDirection $orderByDirection = null
+    ): ?array
     {
         $sql = 'SELECT pdit.*, sdp.*, er.rate, er.date as exchange_rate_date, er.currency_to as exchange_rate_currency
                 FROM portfolio_dividend_income_tax pdit 
                 LEFT JOIN system_dividend_payment sdp ON sdp.id = pdit.system_dividend_id 
                 LEFT JOIN exchange_rate er ON er.id = pdit.exchange_rate_id
-                WHERE pdit.portfolio_id = :portfolioId;';
+                WHERE pdit.portfolio_id = :portfolioId';
+
+        $sql .= \sprintf(' ORDER BY %s', match ($orderBy) {
+            DividendIncomeTaxesOrderBy::DIVIDEND_PAYOUT_DATE => 'sdp.payout_date',
+            default => 'sdp.payout_date',
+        });
+
+        $sql .= ' ' . ($orderByDirection->value ?? OrderByDirection::ASC->value);
 
         $taxes = $this->connection->executeQuery($sql, ['portfolioId' => $portfolioId])->fetchAllAssociative();
 
@@ -95,7 +107,6 @@ class TaxReadModelRepository extends MysqlRepository implements TaxReadModelInte
             $withholdingTax = MoneyFactory::fromJson($tax['withholding_tax_amount']);
             $dividendAmountInTargetCurrencyGross = MoneyFactory::fromJson($tax['dividend_amount_in_target_currency_gross']);
             $dividendAmountInTargetCurrencyNet = MoneyFactory::fromJson($tax['dividend_amount_in_target_currency_net']);
-            $dividendGrossAmount = MoneyFactory::fromJson($tax['dividend_gross_amount']);
             $dividendWithholdingTaxInTargetCurrency = MoneyFactory::fromJson($tax['dividend_withholding_tax_in_target_currency']);
             $taxLeftToPayInTargetCurrency = MoneyFactory::fromJson($tax['tax_left_to_pay_in_target_currency']);
             $taxToPayInTargetCurrency = MoneyFactory::fromJson($tax['tax_to_pay_in_target_currency']);

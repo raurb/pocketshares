@@ -7,6 +7,7 @@ namespace PocketShares\Test\Infrastructure\Symfony\Controller;
 use Money\Currency;
 use Money\Money;
 use PocketShares\ExchangeRates\Application\Command\AddNbpExchangeRates\AddNbpExchangeRatesCommand;
+use PocketShares\ExchangeRates\Domain\ExchangeRate;
 use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Nbp;
 use PocketShares\Portfolio\Domain\Event\PortfolioDividendRegisteredEvent;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
@@ -25,11 +26,19 @@ use Symfony\Component\Routing\Attribute\Route;
 class TestController extends ApiController
 {
     #[Route('/', name: 'test')]
-    public function test(PortfolioDividendTaxCalculator $calculator): Response
+    public function test(): Response
     {
+        $tax = new DividendTax(
+            1,
+            1,
+            'AAPL',
+            MoneyFactory::create(96, 'USD'),
+            new Currency('PLN'),
+            0.15,
+            0.19,
+            new ExchangeRate(new Currency('USD'), new Currency('PLN'), \DateTimeImmutable::createFromFormat('Y-m-d', '2024-02-15'), 4.0593),
+        );
 
-//        $calculator->calculate(new PortfolioDividendRegisteredEvent(1, 2));
-//            $this->queryBus->dispatch(new GetPortfolioDividendIncomeTaxesQuery(1));
 //        $this->fetchNbp();
         return new JsonResponse([]);
     }

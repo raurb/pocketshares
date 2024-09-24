@@ -12,7 +12,7 @@ class MoneyParser
         $precision = \explode('.', $numberAsString);
         if (isset($precision[1])) {
             $count = \strlen($precision[1]);
-            return (int)($numberAsString * (10 ** $count));
+            return (int)(string)($numberAsString * (10 ** $count));
         }
 
         return (int)$numberAsString;

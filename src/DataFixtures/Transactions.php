@@ -64,6 +64,15 @@ class Transactions extends Fixture implements DependentFixtureInterface
         return [
             [
                 'portfolio' => 'stocks',
+                'ticker' => 'ibkr',
+                'numberOfShares' => 0.6,
+                'pricePerShare' => 120,
+                'currency' => 'USD',
+                'date' => (new \DateTimeImmutable()),
+                'type' => TransactionType::TYPE_BUY,
+            ],
+            [
+                'portfolio' => 'stocks',
                 'ticker' => 'aapl',
                 'numberOfShares' => 4,
                 'pricePerShare' => 17823,
