@@ -10,9 +10,12 @@ use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 
 class Portfolios extends Fixture
 {
-    protected const array PORTFOLIOS = [
-        'Stocks' => ['currency' => 'USD'],
-        'ETFs' => ['currency' => 'USD'],
+    public const PORTFOLIO_STOCKS = 'Stocks';
+    public const PORTFOLIO_ETFS = 'ETFs';
+
+    public const array PORTFOLIOS = [
+        self::PORTFOLIO_STOCKS => ['currency' => 'USD'],
+        self::PORTFOLIO_ETFS => ['currency' => 'USD'],
     ];
 
     public function load(ObjectManager $manager): void

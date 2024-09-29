@@ -43,13 +43,6 @@ class DividendTax extends AggregateRoot
 
     private function calculateIncomeTaxAmount(): DividendIncomeTax
     {
-//        $dividendAmountInTargetCurrencyGross = round(($this->dividendGrossAmount->getAmount() / 100) * $this->exchangeRate->rate, 2);
-//        $dividendWithholdingTaxInTargetCurrency = round(($this->withholdingTaxAmount->getAmount() / 100) * $this->exchangeRate->rate, 2);
-//        $taxToPayInTargetCurrency = round($dividendAmountInTargetCurrencyGross * $this->incomeTaxRate, 2);
-//        $taxLeftToPayInTargetCurrency = $taxToPayInTargetCurrency - $dividendWithholdingTaxInTargetCurrency;
-//        $dividendAmountInTargetCurrencyNet = $dividendAmountInTargetCurrencyGross - $dividendWithholdingTaxInTargetCurrency - $taxLeftToPayInTargetCurrency;
-//        $incomeTaxRateTest = round(1 - ($dividendAmountInTargetCurrencyNet / $dividendAmountInTargetCurrencyGross), 2);
-
         $dividendAmountInTargetCurrencyGross = \round($this->dividendGrossAmount->getAmount() * $this->exchangeRate->rate, 2);
         $dividendWithholdingTaxInTargetCurrency = \round($this->withholdingTaxAmount->getAmount() * $this->exchangeRate->rate, 2);
         $taxToPayInTargetCurrency = \round($dividendAmountInTargetCurrencyGross * $this->incomeTaxRate, 2);

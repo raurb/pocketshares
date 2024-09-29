@@ -31,6 +31,8 @@ doctrine:
                 dir: '%kernel.project_dir%/src'
                 prefix: 'PocketShares'
                 alias: App
+        controller_resolver:
+            auto_mapping: true
 
 when@test:
     doctrine:
