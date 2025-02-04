@@ -9,7 +9,8 @@ use PocketShares\Shared\Domain\Exception\InvalidNumberOfSharesException;
 
 class NumberOfShares
 {
-    public const PRECISION = 4;
+    public const PRECISION = 17;
+    public const SCALE = 6;
 
     private float $numberOfShares;
 

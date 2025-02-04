@@ -25,10 +25,10 @@ class TaxReadModelRepository extends MysqlRepository implements TaxReadModelInte
                        "PLN" as income_tax_currency,
                        s.ticker
                 FROM portfolio_dividend_payment pdp
-                         LEFT JOIN system_dividend_payment sdp on pdp.dividend_id = sdp.id
+                         LEFT JOIN system_dividend_payment sdp on pdp.dividend_payment_id = sdp.id
                         LEFT JOIN stock s ON s.id = sdp.stock_id
                 WHERE pdp.portfolio_id = :portfolioId
-                  AND pdp.dividend_id = :dividendId';
+                  AND pdp.dividend_payment_id = :dividendId';
 
         $dividendData = $this->connection->executeQuery($dividendDataSql, ['portfolioId' => $portfolioId, 'dividendId' => $dividendId])->fetchAssociative();
 

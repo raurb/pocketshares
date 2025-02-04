@@ -7,17 +7,12 @@ namespace PocketShares\Test\Infrastructure\Symfony\Controller;
 use Money\Currency;
 use Money\Money;
 use PocketShares\ExchangeRates\Application\Command\AddNbpExchangeRates\AddNbpExchangeRatesCommand;
-use PocketShares\ExchangeRates\Domain\ExchangeRate;
-use PocketShares\ExchangeRates\Infrastructure\Provider\Nbp\Nbp;
-use PocketShares\Portfolio\Domain\Event\PortfolioDividendRegisteredEvent;
 use PocketShares\Shared\Infrastructure\Controller\ApiController;
-use PocketShares\Shared\Utilities\MoneyParser;
 use PocketShares\Shared\Utilities\MoneyFactory;
-use PocketShares\Tax\Application\Query\GetPortfolioDividendIncomeTaxes\GetPortfolioDividendIncomeTaxesQuery;
-use PocketShares\Tax\Domain\DividendTax;
-use PocketShares\Tax\Domain\EventListener\PortfolioDividendTaxCalculator;
-use PocketShares\Tax\Domain\Tax;
-use PocketShares\Tax\Infrastructure\ReadModel\Mysql\TaxReadModelRepository;
+use PocketShares\Stock\Domain\Stock;
+use PocketShares\System\Application\Command\RegisterSystemDividend\RegisterSystemDividendCommand;
+use PocketShares\System\Domain\Event\NewSystemDividendEvent;
+use PocketShares\System\Domain\SystemDividendPayment;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -28,16 +23,14 @@ class TestController extends ApiController
     #[Route('/', name: 'test')]
     public function test(): Response
     {
-        $tax = new DividendTax(
-            1,
-            1,
-            'AAPL',
-            MoneyFactory::create(96, 'USD'),
-            new Currency('PLN'),
-            0.15,
-            0.19,
-            new ExchangeRate(new Currency('USD'), new Currency('PLN'), \DateTimeImmutable::createFromFormat('Y-m-d', '2024-02-15'), 4.0593),
+        $command = new RegisterSystemDividendCommand(
+            stockTicker: 'QCOM',
+            payoutDate: new \DateTimeImmutable(),
+            amount: 456,
+            amountCurrency: 'USD',
         );
+
+        $this->commandBus->dispatch($command);
 
 //        $this->fetchNbp();
         return new JsonResponse([]);

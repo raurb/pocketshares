@@ -25,7 +25,7 @@ class PortfolioTransactionEntity extends BaseEntity
     #[Column(name: 'stock_ticker', type: 'string', length: 5)]
     private string $stockTicker;
 
-    #[Orm\Column(name: 'number_of_shares', type: 'number_of_shares_type', precision: NumberOfShares::PRECISION)]
+    #[Orm\Column(name: 'number_of_shares', type: 'number_of_shares_type', precision: NumberOfShares::PRECISION, scale: NumberOfShares::SCALE)]
     private NumberOfShares $numberOfShares;
 
     #[Orm\Column(type: 'money_type')]

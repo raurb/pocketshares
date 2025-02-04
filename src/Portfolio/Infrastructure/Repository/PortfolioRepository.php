@@ -9,6 +9,7 @@ use PocketShares\Portfolio\Domain\Holding;
 use PocketShares\Portfolio\Domain\Portfolio;
 use PocketShares\Portfolio\Domain\Repository\PortfolioRepositoryInterface;
 use PocketShares\Portfolio\Domain\Transaction;
+use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioDividendPaymentEntity;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioEntity;
 use PocketShares\Portfolio\Infrastructure\Doctrine\Entity\PortfolioHoldingEntity;
 use PocketShares\Portfolio\Infrastructure\Repository\RegisterTransaction\TransactionRegistryProcessor;
@@ -132,7 +133,12 @@ class PortfolioRepository implements PortfolioRepositoryInterface
     {
         /** @var SystemDividendPayment $dividendPayment */
         foreach ($registeredDividendPayments as $dividendPayment) {
-            $portfolioEntity->addDividendPayment($this->entityManager->getReference(SystemDividendPaymentEntity::class, $dividendPayment->systemDividendId));
+            $portfolioDividendPayment = new PortfolioDividendPaymentEntity(
+                portfolio: $portfolioEntity,
+                dividendPaymentEntity: $this->entityManager->getReference(SystemDividendPaymentEntity::class, $dividendPayment->systemDividendId),
+                numberOfShares: $portfolioEntity->getHoldingByTicker($dividendPayment->stock->ticker)->getNumberOfShares(),
+            );
+            $portfolioEntity->addDividendPayment($portfolioDividendPayment);
         }
 
         return $portfolioEntity;

@@ -22,7 +22,7 @@ class PortfolioHoldingEntity extends BaseEntity
     #[Orm\ManyToOne(targetEntity: StockEntity::class)]
     private StockEntity $stock;
 
-    #[Orm\Column(name: 'number_of_shares', type: 'number_of_shares_type', precision: NumberOfShares::PRECISION)]
+    #[Orm\Column(name: 'number_of_shares', type: 'number_of_shares_type', precision: NumberOfShares::PRECISION, scale: NumberOfShares::SCALE)]
     private NumberOfShares $numberOfShares;
 
     #[Orm\OneToMany(mappedBy: 'portfolioHolding', targetEntity: PortfolioTransactionEntity::class)]

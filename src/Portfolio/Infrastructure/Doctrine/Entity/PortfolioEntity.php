@@ -32,10 +32,7 @@ class PortfolioEntity extends BaseEntity
     #[ORM\OneToMany(mappedBy: 'portfolio', targetEntity: PortfolioTransactionEntity::class, cascade: ['persist', 'remove'])]
     private Collection $transactions;
 
-    #[ORM\JoinTable(name: 'portfolio_dividend_payment')]
-    #[ORM\JoinColumn(name: 'portfolio_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(name: 'dividend_id', referencedColumnName: 'id')]
-    #[ORM\ManyToMany(targetEntity: SystemDividendPaymentEntity::class)]
+    #[ORM\OneToMany(mappedBy: 'portfolio', targetEntity: PortfolioDividendPaymentEntity::class, cascade: ['persist', 'remove'])]
     private Collection $dividendPayments;
 
     public function __construct(string $name, string $currency)
@@ -86,7 +83,7 @@ class PortfolioEntity extends BaseEntity
         return null;
     }
 
-    public function addDividendPayment(SystemDividendPaymentEntity $dividendPaymentEntity): void
+    public function addDividendPayment(PortfolioDividendPaymentEntity $dividendPaymentEntity): void
     {
         if ($this->dividendPayments->contains($dividendPaymentEntity)) {
             return;

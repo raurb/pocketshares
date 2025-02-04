@@ -142,6 +142,9 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
 
     public function getPortfolioDividends(int $portfolioId, ?\DateTimeImmutable $from = null, ?\DateTimeImmutable $to = null): array
     {
+        /**
+         * @todo tutaj trzeba dorobic join z portfolio_dividend_payment dla numberofshares
+         */
         $sql = "SELECT
                 sdp.id,
                 s.ticker,
@@ -150,7 +153,7 @@ class ReadModelPortfolioRepository extends MysqlRepository implements PortfolioR
                 sdp.amount ->> '$.currency' AS dividend_currency
                 FROM system_dividend_payment sdp
                 LEFT JOIN stock s ON s.id = sdp.stock_id
-                WHERE sdp.id IN (SELECT dividend_id FROM portfolio_dividend_payment WHERE portfolio_id = :portfolioId);
+                WHERE sdp.id IN (SELECT dividend_payment_id FROM portfolio_dividend_payment WHERE portfolio_id = :portfolioId);
                 ";
 
         $results = $this->executeRawQuery($sql, ['portfolioId' => $portfolioId])->fetchAllAssociative();
